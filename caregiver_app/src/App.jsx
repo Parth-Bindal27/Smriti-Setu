@@ -246,7 +246,9 @@ export default function App() {
     socket.on('memory:selection-changed', handleMemorySelectionChanged);
     socket.on('memory:created', handleMemoryCreated);
     socket.on('memory:deleted', handleMemoryDeleted);
-    socket.on('memories:batch-updated', (all) => setMemories(all));
+    socket.on('profile:updated', (updated) => {
+      if (updated) setProfile(updated);
+    });
 
     return () => {
       socket.off('caregiver:game-completed', handleGameCompleted);
@@ -256,12 +258,13 @@ export default function App() {
       socket.off('memory:selection-changed', handleMemorySelectionChanged);
       socket.off('memory:created', handleMemoryCreated);
       socket.off('memory:deleted', handleMemoryDeleted);
+      socket.off('profile:updated');
     };
   }, []);
 
   useEffect(() => {
     fetchAll();
-    const interval = setInterval(fetchAll, 2000);
+    const interval = setInterval(fetchAll, 15000);
     return () => clearInterval(interval);
   }, [apiUrl]);
 
