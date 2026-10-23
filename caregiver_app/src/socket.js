@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 
-const API_BASE = import.meta.env.VITE_API_URL || '';
+const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
 
 let socket = null;
 

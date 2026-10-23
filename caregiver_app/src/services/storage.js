@@ -180,6 +180,9 @@ export async function putRecord(storeName, record) {
   if (!key) {
     record._id = `local_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
   }
+  if (storeName === STORES.SYNC_METADATA && !record.key) {
+    record.key = record._id || 'metadata_default';
+  }
 
   const db = await initializeStorage();
   return new Promise((resolve, reject) => {

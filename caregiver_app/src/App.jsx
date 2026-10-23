@@ -50,7 +50,7 @@ export default function App() {
   const [syncStatus, setSyncStatus] = useState({ syncing: false, count: 0 });
 
   // Use Vite proxy for seamless routing on both localhost and mobile LAN IP
-  const apiUrl = import.meta.env.VITE_API_URL || '';
+  const apiUrl = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
 
   // Initialize IndexedDB and online/offline event listeners
   useEffect(() => {

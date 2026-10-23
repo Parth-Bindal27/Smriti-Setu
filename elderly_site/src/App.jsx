@@ -54,7 +54,7 @@ export default function App() {
   const [vrPresetMemories, setVrPresetMemories] = useState(null);
 
   // Use Vite proxy for seamless routing on both localhost and mobile LAN IP
-  const apiUrl = import.meta.env.VITE_API_URL || '';
+  const apiUrl = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
 
   const [isOffline, setIsOffline] = useState(typeof navigator !== 'undefined' ? !navigator.onLine : false);
 

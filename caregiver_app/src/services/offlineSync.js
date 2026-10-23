@@ -44,9 +44,11 @@ export async function drainPendingMutations(apiUrl = '') {
 
   for (const mutation of pending) {
     try {
+      const cleanApi = (apiUrl || '').replace(/\/+$/, '');
+      const cleanEp = mutation.endpoint.startsWith('/') ? mutation.endpoint : `/${mutation.endpoint}`;
       const url = mutation.endpoint.startsWith('http')
         ? mutation.endpoint
-        : `${apiUrl}${mutation.endpoint}`;
+        : `${cleanApi}${cleanEp}`;
 
       const res = await fetch(url, {
         method: mutation.method || 'POST',
@@ -86,7 +88,9 @@ export async function drainPendingMutations(apiUrl = '') {
  * Implements Network-First with instant local-first persistence.
  */
 export async function fetchWithLocalFallback(endpoint, storeName, apiUrl = '') {
-  const fullUrl = endpoint.startsWith('http') ? endpoint : `${apiUrl}${endpoint}`;
+  const cleanApi = (apiUrl || '').replace(/\/+$/, '');
+  const cleanEp = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const fullUrl = endpoint.startsWith('http') ? endpoint : `${cleanApi}${cleanEp}`;
 
   try {
     const res = await fetch(fullUrl, { cache: 'no-cache' });

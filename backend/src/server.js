@@ -53,6 +53,14 @@ app.use(cors({
 app.use(express.json());
 app.use(morgan('dev'));
 
+// Normalize duplicated slashes from client baseURL trailing-slashes (e.g. //api/profile -> /api/profile)
+app.use((req, res, next) => {
+  if (req.url && req.url.includes('//')) {
+    req.url = req.url.replace(/\/{2,}/g, '/');
+  }
+  next();
+});
+
 // Static uploads directory
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
