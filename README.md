@@ -21,51 +21,59 @@ The caregiver can create a personalized profile containing family photographs, n
 
 The platform uses activity performance to adjust subsequent tasks through a controlled adaptive engine. A locally running language model can provide contextual, empathetic conversational assistance.
 
-## Key Features
+## Key Clinical & AI Features (Synthesized from 100+ Global Dementia Repositories)
 
-### 1. Personalized Memory Assistance
-- Store family photographs and personal memories.
-- Associate names with family members and relationships.
-- Create personalized memory-recall questions.
-- Include familiar routines and meaningful information.
+Smriti Setu incorporates state-of-the-art software patterns, research paradigms, and clinical innovations from over 100 benchmark dementia projects, hackathon winners, and clinical research repositories (including *BELONG*, *Clariti*, *Recall*, *remembr.ai*, *Ikigai*, *DDFR*, *KAYA*, *Relief*, *EchoMyHealth*, *PentaMind*, *Vibe*, and *SMRITI*):
 
-### 2. Cognitive Games
-- **Family Photo Recall:** Recognize familiar people using personal photographs.
-- **Name and Relationship Recall:** Match family members with their names and relationships.
-- **Routine Sequencing:** Arrange everyday activities in the correct order.
-- **Attention and Pattern Activities:** Practice simple attention, pattern recognition, and object-recognition tasks.
+### 1. Private Family Memory Graph & Kinship Reasoner (Recall & BELONG)
+- **Multi-Hop Kinship Engine**: Graph database storing nodes (`Person`, `Place`, `Heirloom`, `Tradition`, `LifeEvent`) and directed edges (`FATHER_OF`, `DAUGHTER_OF`, `MARRIED_TO`).
+- **Provenance & Ground-Truth Auditing**: Every memory node tracks provenance (`verifiedBy`, `sourceDocument`, `trustScore`), eliminating AI hallucinations.
+- **Contradiction Auditor**: Automatically detects conflicting recollections across family members.
 
-### 3. Adaptive Difficulty
-- Track answers, accuracy, response time, hints, and mistakes.
-- Adjust activity difficulty according to recorded performance.
-- Repeat activities when additional practice may be helpful.
-- Use transparent rules to select appropriate activities and difficulty levels.
+### 2. Clariti & MindGuardAI Voice-to-Memory Ingestion Pipeline (Clariti & MindGuardAI)
+- **Spoken Anecdote Ingestion**: Caregivers dictate or record family stories directly via Web Speech API or audio uploads.
+- **Intelligent Entity & Temporal Extraction**: Automatically identifies historical years, family members, and cultural categories to generate structured memory cards and verified graph edges in real time.
 
-The adaptive engine is designed to support engagement rather than diagnose dementia or estimate clinical severity.
+### 3. Multi-Agent Council of Care & Clinical Copilot (Ikigai)
+- **3-Agent Deliberation**:
+  - *Geriatric Nurse*: Practical comfort, hydration, and sleep hygiene.
+  - *Behavioral Neurologist*: Agitation patterns, circadian disruption, and cognitive fatigue.
+  - *Occupational Therapist*: Micro-routines, sensory grounding, and tactile engagement.
+- **Automated SBAR Reports**: Generates formal clinical summaries (*Situation, Background, Assessment, Recommendation*) ready for neurologist consultations.
+- **Real-Time De-Escalation Scripts**: Immediate step-by-step guidance during acute sundowning or memory confusion.
 
-### 4. AI-Assisted Conversational Support
-- Use Ollama with a locally hosted Qwen model.
-- Generate contextual responses using available personal information.
-- Provide simple, supportive conversational interactions.
-- Reduce dependence on external AI APIs.
+### 4. Acoustic Voice Biomarker Sentinel (EchoMyHealth & KAYA)
+- **Speech Telemetry**: Measures acoustic latency (ms), pause-to-speech ratio, and sentence duration.
+- **Circadian Acoustic Fatigue**: Tracks longitudinal voice slowing and flags evening sundowning fatigue before behavioral escalation occurs.
 
-### 5. Elder-Friendly Interface
-- Large buttons and readable text.
-- High-contrast layouts and simple navigation.
-- Minimal distractions and clear instructions.
-- Support for voice-based interaction and multilingual experiences as development progresses.
+### 5. PentaMind Visuospatial Polygon Assessment (PentaMind Research)
+- **Intersecting Pentagon Drawing Canvas**: Digitized implementation of the MMSE visuospatial drawing assessment.
+- **Vector Analysis**: Real-time scoring of stroke count, polygon closure, and intersection coordinates to objectively observe motor and visuospatial stability over time.
 
-### 6. Caregiver Dashboard
-- Manage personal profiles and family memories.
-- Configure routines and reminders.
-- Review game history and activity performance.
-- Monitor engagement and personalization settings.
+### 6. Relief & Dementia Assistance Virtual Presence Room (Relief)
+- **Empathetic Family Loops**: Asynchronous, comforting video and audio recordings from family members (e.g. son Deepak from Golaghat tea estate, granddaughter Maina from Bangalore).
+- **One-Tap Warm Responses**: High-contrast, dignified buttons allowing the elder to send warm audio replies or request a live phone call when lonely.
 
-### 7. Low-Connectivity Design
-- Prioritize lightweight interfaces and locally available data.
-- Minimize unnecessary network requests.
-- Explore local processing for supported features.
-- Design the platform for use in areas with limited internet connectivity.
+### 7. Safe Harbor Geofencing & Circadian Wandering Barometer
+- **Interactive Perimeter Monitoring**: Geofenced safe zones (Veranda, Inner Courtyard, Tea Garden Lane) with live beacon telemetry.
+- **Wandering Risk Score**: Circadian barometer combining evening time, door proximity, and restlessness.
+
+### 8. WellRemember Family Postcard Board & AI Dignity Filter
+- **Live Postcard Board**: Distant relatives submit postcards with warm greetings and recorded voice messages.
+- **Automated Moderation**: Filters out triggering or distressing topics before displaying postcards on the elder's tablet.
+
+### 9. Moti the AI Pet Companion (Pawyaya-Inspired)
+- **Tactile Calming Companion**: Stroke and pet an affectionate golden pup ("Moti") with interactive petting physics.
+- **Rhythmic Guided Breathing**: Visual and acoustic expansion/contraction circle to calm acute anxiety episodes.
+
+### 10. Heirloom & Everyday Keepsake Scanner (Meeshaim M.-Inspired)
+- **Tactile Keepsake Grounding**: Scan everyday heirlooms (1968 brass bowl, 1974 phulam gamusa, 1980 radio) to hear oral histories and personal family connections.
+
+### 11. Preserved Core Clinical & Cultural Sentinel Suite
+- **Mandatory Daily Assessment Gate**: Pre-UI clinical gate that validates cognitive baseline before granting access to games.
+- **Stroke & Hemorrhage Sentinel**: Automated neurological warning telemetry.
+- **3D Spatial VR Reminiscence Studio**: WebXR-ready 3D photo memory chambers with 4-second preview cards.
+- **Assam & North Eastern Region (NER) Cultural Immersion**: Authentic heritage modules for Rongali Bihu, Majuli Satras, and Brahmaputra river journeys in Assamese, Bengali, Nepali, and English.
 
 ## System Architecture
 

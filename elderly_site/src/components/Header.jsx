@@ -3,9 +3,10 @@ import { Settings, ArrowLeft, Globe, ShieldCheck } from 'lucide-react';
 
 const LANGUAGES = [
   { code: 'as', label: 'অসমীয়া' },
-  { code: 'en', label: 'English' },
+  { code: 'bn', label: 'বাংলা' },
   { code: 'ne', label: 'नेपाली' },
-  { code: 'bn', label: 'বাংলা' }
+  { code: 'hi', label: 'हिन्दी' },
+  { code: 'en', label: 'English' }
 ];
 
 export default function Header({
@@ -24,7 +25,11 @@ export default function Header({
 
   // Format today's date in a serene, readable style
   const today = new Date();
-  const dateStr = today.toLocaleDateString(currentLang === 'en' ? 'en-US' : currentLang === 'bn' ? 'bn-IN' : currentLang === 'ne' ? 'ne-NP' : 'as-IN', {
+  const dateStr = today.toLocaleDateString(
+    currentLang === 'en' ? 'en-US' : 
+    currentLang === 'bn' ? 'bn-IN' : 
+    currentLang === 'ne' ? 'ne-NP' : 
+    currentLang === 'hi' ? 'hi-IN' : 'as-IN', {
     weekday: 'long',
     month: 'long',
     day: 'numeric'

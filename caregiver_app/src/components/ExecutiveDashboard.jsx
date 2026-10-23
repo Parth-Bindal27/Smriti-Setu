@@ -8,10 +8,20 @@ import {
   Sparkles,
   TrendingUp,
   UserCheck,
-  Calendar
+  Calendar,
+  FileText,
+  ChevronRight
 } from 'lucide-react';
 
-export default function ExecutiveDashboard({ metrics, profile, sessions, onOpenAssessmentConfig }) {
+export default function ExecutiveDashboard({
+  metrics,
+  profile,
+  sessions,
+  onOpenAssessmentConfig,
+  onOpenPitchMode,
+  onOpenDoctorReport,
+  onOpenSentinel
+}) {
   const summary = metrics?.summary || {
     weeklySessionsCount: 7,
     participationStatus: 'Consistent Participation',
@@ -37,6 +47,183 @@ export default function ExecutiveDashboard({ metrics, profile, sessions, onOpenA
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      {/* Shark Tank Investor & Live Pitch Showcase Card */}
+      <div style={{
+        background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
+        border: '2px solid rgba(245, 158, 11, 0.4)',
+        borderRadius: '18px',
+        padding: '1.5rem',
+        color: '#FFFFFF',
+        boxShadow: '0 8px 24px rgba(15, 23, 42, 0.15)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: '-20px',
+          right: '-20px',
+          fontSize: '120px',
+          opacity: 0.05,
+          userSelect: 'none',
+          pointerEvents: 'none'
+        }}>
+          🦈
+        </div>
+
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '1rem',
+          position: 'relative',
+          zIndex: 1
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <div style={{
+              width: '50px',
+              height: '50px',
+              borderRadius: '14px',
+              background: 'linear-gradient(135deg, #F59E0B, #D97706)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 16px rgba(245, 158, 11, 0.4)',
+              flexShrink: 0
+            }}>
+              <span style={{ fontSize: '26px' }}>🦈</span>
+            </div>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '800', color: '#F8FAFC' }}>
+                  Shark Tank Investor Suite & Live Telemetry Simulator
+                </h3>
+                <span style={{
+                  backgroundColor: '#D97706',
+                  color: '#FFFFFF',
+                  fontSize: '11px',
+                  fontWeight: '700',
+                  padding: '2px 8px',
+                  borderRadius: '6px'
+                }}>
+                  PITCH READY
+                </span>
+              </div>
+              <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#94A3B8' }}>
+                ₹10,500 Cr TAM • 8.8M Indian Patients • B2C (₹499/mo) & B2B (₹15,000/mo) Dual Revenue Engine
+              </p>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            <button
+              onClick={onOpenPitchMode}
+              style={{
+                background: 'linear-gradient(135deg, #F59E0B, #D97706)',
+                color: '#FFFFFF',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '10px 18px',
+                fontSize: '13px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                boxShadow: '0 4px 12px rgba(217, 119, 6, 0.4)'
+              }}
+            >
+              <Sparkles size={16} />
+              <span>Launch Live Split Demo</span>
+            </button>
+
+            <button
+              onClick={onOpenDoctorReport}
+              style={{
+                background: 'rgba(255, 255, 255, 0.1)',
+                color: '#FFFFFF',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '8px',
+                padding: '10px 18px',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              <FileText size={16} color="#38BDF8" />
+              <span>Doctor Dossier (PDF)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Neurological Sentinel & Stroke / Hemorrhage Warning Card */}
+      <div style={{
+        background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.05) 0%, rgba(254, 242, 242, 0.85) 100%)',
+        border: '2px solid rgba(220, 38, 38, 0.3)',
+        borderRadius: '16px',
+        padding: '1.25rem 1.5rem',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '1rem',
+        boxShadow: '0 4px 16px rgba(220, 38, 38, 0.08)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <div style={{
+            width: '46px',
+            height: '46px',
+            borderRadius: '12px',
+            background: 'rgba(220, 38, 38, 0.15)',
+            color: '#DC2626',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0
+          }}>
+            <ShieldCheck size={28} />
+          </div>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+              <h3 style={{ margin: 0, fontSize: '18px', color: '#0F172A', fontWeight: '800' }}>
+                Neurological Sentinel & Hemorrhage / Stroke Early Warning
+              </h3>
+              <span className="badge-pill" style={{ background: '#FEE2E2', color: '#DC2626', border: '1px solid #FCA5A5' }}>
+                🚨 BE-FAST Biomarker Surveillance Active
+              </span>
+            </div>
+            <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#475569' }}>
+              Real-time speech slurring detection, bilateral touch motor asymmetry, and 48-hour persistent symptom escalation.
+            </p>
+          </div>
+        </div>
+
+        <button
+          onClick={onOpenSentinel}
+          style={{
+            background: '#DC2626',
+            color: '#FFFFFF',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '10px 18px',
+            fontSize: '13px',
+            fontWeight: '700',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: '0 4px 12px rgba(220, 38, 38, 0.3)'
+          }}
+        >
+          <span>Open Sentinel Monitor</span>
+          <ChevronRight size={16} />
+        </button>
+      </div>
+
       {/* Pre-UI Daily Memory Assessment Configuration Card (Executive Spotlight) */}
       <div style={{
         background: 'linear-gradient(135deg, rgba(217, 119, 6, 0.08) 0%, rgba(254, 243, 199, 0.9) 100%)',

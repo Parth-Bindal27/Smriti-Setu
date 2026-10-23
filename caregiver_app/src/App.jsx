@@ -10,11 +10,28 @@ import AICulturePlayground from './components/AICulturePlayground';
 import MobileConnectModal from './components/MobileConnectModal';
 import LiveSessionMonitor from './components/LiveSessionMonitor';
 import AssessmentManager from './components/AssessmentManager';
+import SharkTankPitchModal from './components/SharkTankPitchModal';
+import DoctorReportModal from './components/DoctorReportModal';
+import NeurologicalSentinel from './components/NeurologicalSentinel';
+import MemoryGraphExplorer from './components/MemoryGraphExplorer';
+import CaregiverCopilot from './components/CaregiverCopilot';
+import VoiceBiomarkerSentinel from './components/VoiceBiomarkerSentinel';
+import SafeHarborMonitor from './components/SafeHarborMonitor';
+import FamilyBoardModerator from './components/FamilyBoardModerator';
 import { getSocket } from './socket';
+import { initializeStorage, STORES } from './services/storage';
+import {
+  fetchWithLocalFallback,
+  drainPendingMutations,
+  initializeNetworkListeners,
+  subscribeToSyncStatus
+} from './services/offlineSync';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isMobileModalOpen, setIsMobileModalOpen] = useState(false);
+  const [isPitchModalOpen, setIsPitchModalOpen] = useState(false);
+  const [isDoctorReportOpen, setIsDoctorReportOpen] = useState(false);
 
   const [profile, setProfile] = useState(null);
   const [metrics, setMetrics] = useState(null);
@@ -29,30 +46,64 @@ export default function App() {
   const [isPaused, setIsPaused] = useState(false);
   const wsRef = useRef(null);
 
+  const [isOffline, setIsOffline] = useState(typeof navigator !== 'undefined' ? !navigator.onLine : false);
+  const [syncStatus, setSyncStatus] = useState({ syncing: false, count: 0 });
+
   // Use Vite proxy for seamless routing on both localhost and mobile LAN IP
   const apiUrl = import.meta.env.VITE_API_URL || '';
+
+  // Initialize IndexedDB and online/offline event listeners
+  useEffect(() => {
+    initializeStorage().catch(err => console.warn('[App] Local storage init notice:', err));
+    initializeNetworkListeners(apiUrl);
+
+    const handleOnline = () => {
+      setIsOffline(false);
+      fetchAll();
+    };
+    const handleOffline = () => {
+      setIsOffline(true);
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    const unsubscribeSync = subscribeToSyncStatus(setSyncStatus);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+      unsubscribeSync();
+    };
+  }, [apiUrl]);
 
   const fetchAll = async () => {
     try {
       const [pRes, mRes, sRes, fRes, rRes, remRes, memRes] = await Promise.all([
-        fetch(`${apiUrl}/api/profile`),
-        fetch(`${apiUrl}/api/metrics`),
-        fetch(`${apiUrl}/api/sessions`),
-        fetch(`${apiUrl}/api/family`),
-        fetch(`${apiUrl}/api/routines`),
-        fetch(`${apiUrl}/api/reminders`),
-        fetch(`${apiUrl}/api/memories`)
+        fetchWithLocalFallback('/api/profile', STORES.ELDER_PROFILES, apiUrl),
+        fetchWithLocalFallback('/api/metrics', STORES.SYNC_METADATA, apiUrl),
+        fetchWithLocalFallback('/api/sessions', STORES.ACTIVITY_SESSIONS, apiUrl),
+        fetchWithLocalFallback('/api/family', STORES.CAREGIVER_PROFILES, apiUrl),
+        fetchWithLocalFallback('/api/routines', STORES.CARE_ROUTINES, apiUrl),
+        fetchWithLocalFallback('/api/reminders', STORES.SYNC_METADATA, apiUrl),
+        fetchWithLocalFallback('/api/memories', STORES.MEMORIES, apiUrl)
       ]);
 
-      if (pRes.ok) setProfile(await pRes.json());
-      if (mRes.ok) setMetrics(await mRes.json());
-      if (sRes.ok) setSessions(await sRes.json());
-      if (fRes.ok) setFamilyMembers(await fRes.json());
-      if (rRes.ok) setRoutines(await rRes.json());
-      if (remRes.ok) setReminders(await remRes.json());
-      if (memRes.ok) setMemories(await memRes.json());
+      if (pRes.data) setProfile(pRes.data);
+      if (mRes.data) setMetrics(mRes.data);
+      if (sRes.data) setSessions(Array.isArray(sRes.data) ? sRes.data : []);
+      if (fRes.data) setFamilyMembers(Array.isArray(fRes.data) ? fRes.data : []);
+      if (rRes.data) setRoutines(Array.isArray(rRes.data) ? rRes.data : []);
+      if (remRes.data) setReminders(Array.isArray(remRes.data) ? remRes.data : []);
+      if (memRes.data) setMemories(Array.isArray(memRes.data) ? memRes.data : []);
+
+      if (pRes.isOffline || memRes.isOffline) {
+        setIsOffline(true);
+      } else {
+        setIsOffline(false);
+      }
     } catch (err) {
-      console.warn('Backend sync notice:', err.message);
+      console.warn('Backend sync notice (operating from secure local store):', err.message);
+      setIsOffline(true);
     }
   };
 
@@ -300,7 +351,58 @@ export default function App() {
         onTabChange={setActiveTab}
         onOpenMobileConnect={() => setIsMobileModalOpen(true)}
         onRefresh={fetchAll}
+        onOpenPitchMode={() => setIsPitchModalOpen(true)}
+        onOpenDoctorReport={() => setIsDoctorReportOpen(true)}
       />
+
+      {/* Local-First Secure Storage & Network Status Banner */}
+      {isOffline && (
+        <div style={{
+          background: 'linear-gradient(90deg, #1E293B, #0F172A)',
+          borderBottom: '2px solid #38BDF8',
+          padding: '10px 1.5rem',
+          fontSize: '14px',
+          color: '#E2E8F0',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '12px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+        }}>
+          <span style={{ fontSize: '18px' }}>📡</span>
+          <span>
+            <strong>Local-First Offline Protection Active:</strong> Operating securely from browser IndexedDB. All care records, journals, and memories are protected and will sync automatically upon reconnection.
+          </span>
+          <button
+            onClick={() => fetchAll()}
+            style={{
+              padding: '4px 12px',
+              background: '#0284C7',
+              color: '#FFFFFF',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '12px',
+              fontWeight: 700,
+              cursor: 'pointer'
+            }}
+          >
+            Retry Connection
+          </button>
+        </div>
+      )}
+
+      {syncStatus.syncing && (
+        <div style={{
+          background: '#047857',
+          padding: '6px 1.5rem',
+          fontSize: '13px',
+          color: '#FFFFFF',
+          textAlign: 'center',
+          fontWeight: 700
+        }}>
+          🔄 Synchronizing offline mutations with server...
+        </div>
+      )}
 
       <main style={{ maxWidth: '1350px', margin: '0 auto', padding: '1.75rem 1.5rem' }}>
         {/* Real-Time Live Session Monitor attached via Socket.IO */}
@@ -312,6 +414,35 @@ export default function App() {
             profile={profile}
             sessions={sessions}
             onOpenAssessmentConfig={() => setActiveTab('assessment')}
+            onOpenPitchMode={() => setIsPitchModalOpen(true)}
+            onOpenDoctorReport={() => setIsDoctorReportOpen(true)}
+            onOpenSentinel={() => setActiveTab('sentinel')}
+          />
+        )}
+
+        {activeTab === 'graph' && (
+          <MemoryGraphExplorer
+            apiUrl={apiUrl}
+          />
+        )}
+
+        {activeTab === 'copilot' && (
+          <CaregiverCopilot
+            apiUrl={apiUrl}
+          />
+        )}
+
+        {activeTab === 'voice_biomarkers' && (
+          <VoiceBiomarkerSentinel
+            apiUrl={apiUrl}
+          />
+        )}
+
+        {activeTab === 'sentinel' && (
+          <NeurologicalSentinel
+            apiUrl={apiUrl}
+            profile={profile}
+            onRefreshAll={fetchAll}
           />
         )}
 
@@ -319,6 +450,18 @@ export default function App() {
           <AssessmentManager
             apiUrl={apiUrl}
             onRefreshAll={fetchAll}
+          />
+        )}
+
+        {activeTab === 'safe_harbor' && (
+          <SafeHarborMonitor
+            apiUrl={apiUrl}
+          />
+        )}
+
+        {activeTab === 'family_board' && (
+          <FamilyBoardModerator
+            apiUrl={apiUrl}
           />
         )}
 
@@ -378,6 +521,22 @@ export default function App() {
         isOpen={isMobileModalOpen}
         onClose={() => setIsMobileModalOpen(false)}
         apiUrl={apiUrl}
+      />
+
+      <SharkTankPitchModal
+        isOpen={isPitchModalOpen}
+        onClose={() => setIsPitchModalOpen(false)}
+        apiUrl={apiUrl}
+        profile={profile}
+      />
+
+      <DoctorReportModal
+        isOpen={isDoctorReportOpen}
+        onClose={() => setIsDoctorReportOpen(false)}
+        profile={profile}
+        metrics={metrics}
+        sessions={sessions}
+        memories={memories}
       />
     </div>
   );

@@ -4,6 +4,12 @@ const Routine = require('./models/Routine');
 const Reminder = require('./models/Reminder');
 const GameSession = require('./models/GameSession');
 const Memory = require('./models/Memory');
+const { MemoryGraphNode, MemoryGraphEdge } = require('./models/MemoryGraph');
+const HeirloomObject = require('./models/HeirloomObject');
+const SafeHarborZone = require('./models/SafeHarborZone');
+const CaregiverJournal = require('./models/CaregiverJournal');
+const VoiceBiomarker = require('./models/VoiceBiomarker');
+const FamilyBoardPost = require('./models/FamilyBoardPost');
 
 async function seedData() {
   console.log('[Seed] Checking database collections...');
@@ -503,7 +509,488 @@ async function seedData() {
     ]);
   }
 
-  console.log('[Seed] Database populated successfully with culturally authentic NER data.');
+  // --- Seed Verified Personal Memory Graph ---
+  const graphNodeCount = await MemoryGraphNode.countDocuments();
+  if (graphNodeCount === 0) {
+    console.log('[Seed] Seeding Verified Personal Memory Graph nodes & provenance edges...');
+    await MemoryGraphNode.insertMany([
+      {
+        nodeId: 'node_bhaben',
+        label: 'Bhaben Baruah (Koka)',
+        category: 'Person',
+        culturalTitle: 'ককা (Koka) — Respected Patriarch',
+        details: 'Age 76, retired tea executive from Assam Tea Corp in Jorhat. Now resides in Beltola, Guwahati.',
+        imageUrl: 'https://images.unsplash.com/photo-1544717305-2782549b5136?w=400',
+        icon: 'User',
+        provenance: {
+          verifiedBy: 'Deepak Baruah (Eldest Son)',
+          sourceDocument: 'Government Pension ID & Family Chronicle',
+          trustScore: 1.0,
+          isGroundTruth: true
+        }
+      },
+      {
+        nodeId: 'node_deepak',
+        label: 'Deepak Baruah',
+        category: 'Person',
+        culturalTitle: 'ডাঙৰ ল’ৰা (Dangor Lora) — Eldest Son',
+        details: 'Manages tea estates in Golaghat. Primary family caregiver. Brings fresh first-flush orthodox tea weekly.',
+        imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
+        icon: 'HeartHandshake',
+        provenance: {
+          verifiedBy: 'Self-Verified Caregiver Profile',
+          sourceDocument: 'Family Oral History & Aadhaar Identity',
+          trustScore: 1.0,
+          isGroundTruth: true
+        }
+      },
+      {
+        nodeId: 'node_maina',
+        label: 'Maina (Rhea)',
+        category: 'Person',
+        culturalTitle: 'নাতিনী (Naati-Suwali) — Beloved Granddaughter',
+        details: 'School teacher in Bangalore. Visits for Magh Bihu every winter to make Til Pitha and Narikol Laru with Koka.',
+        imageUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400',
+        icon: 'Sparkles',
+        provenance: {
+          verifiedBy: 'Deepak Baruah (Father)',
+          sourceDocument: 'Family Archive & Video Call Confirmation',
+          trustScore: 0.99,
+          isGroundTruth: true
+        }
+      },
+      {
+        nodeId: 'node_rohan',
+        label: 'Rohan',
+        category: 'Person',
+        culturalTitle: 'নাতি (Naati-Lora) — Grandson & Dhol Player',
+        details: 'College student in Guwahati. Plays the Bihu dhol at Latasil playground with a bright red Phulam Gamusa.',
+        imageUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400',
+        icon: 'Music',
+        provenance: {
+          verifiedBy: 'Deepak Baruah (Father)',
+          sourceDocument: 'Bihu Competition Certificate',
+          trustScore: 0.99,
+          isGroundTruth: true
+        }
+      },
+      {
+        nodeId: 'node_jorhat',
+        label: 'Jorhat & Cinnamara Estate',
+        category: 'Place',
+        culturalTitle: 'চাহৰ দেশ (Tea Heartland)',
+        details: 'Where Koka worked for 35 glorious years with Assam Tea Corporation. He loved walking the misty tea rows at dawn.',
+        imageUrl: 'https://images.unsplash.com/photo-1588600878108-578307a3cc9d?w=600',
+        icon: 'MapPin',
+        provenance: {
+          verifiedBy: 'Service Records 1973-2008',
+          sourceDocument: 'Assam Tea Corporation Commendation Letter',
+          trustScore: 1.0,
+          isGroundTruth: true
+        }
+      },
+      {
+        nodeId: 'node_sivasagar',
+        label: 'Sivasagar Ancestral Home',
+        category: 'Place',
+        culturalTitle: 'ঐতিহাসিক শিৱসাগৰ (Historic Sivasagar)',
+        details: 'Ancestral birthplace near the sacred Shiva Doul and the vast waters of Joysagar Pukhuri.',
+        imageUrl: 'https://images.unsplash.com/photo-1609137144822-4752530a6c0f?w=600',
+        icon: 'Home',
+        provenance: {
+          verifiedBy: 'Ancestral Land Deed & Oral Chronicle',
+          sourceDocument: 'Baruah Family Genealogy Tree',
+          trustScore: 1.0,
+          isGroundTruth: true
+        }
+      },
+      {
+        nodeId: 'node_bihu',
+        label: 'Rongali & Magh Bihu',
+        category: 'Tradition',
+        culturalTitle: 'ব’হাগ আৰু মাঘ বিহু (The Great Festival)',
+        details: 'The heartbeat of family life. Scent of Kopou orchids, sound of dhol, and steaming plates of Til Pitha.',
+        imageUrl: 'https://images.unsplash.com/photo-1543807535-eceef0bc6599?w=600',
+        icon: 'Flame',
+        provenance: {
+          verifiedBy: 'Family Photo Albums 1968-2025',
+          sourceDocument: 'Annual Bihu Gathering Photos',
+          trustScore: 1.0,
+          isGroundTruth: true
+        }
+      },
+      {
+        nodeId: 'node_heirloom_cup',
+        label: 'Ancestral Brass Kahi-Bati',
+        category: 'Heirloom',
+        culturalTitle: 'কাঁহৰ বাটি (Bell-Metal Brass Bowl)',
+        details: 'Gifted to Bhaben and his late wife Pratibha at their 1968 wedding in Sivasagar. Used for morning Doi-Chira.',
+        imageUrl: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600',
+        icon: 'Coffee',
+        provenance: {
+          verifiedBy: 'Deepak Baruah (Son)',
+          sourceDocument: 'Physical Heirloom in Guwahati Residence',
+          trustScore: 1.0,
+          isGroundTruth: true
+        }
+      },
+      {
+        nodeId: 'node_heirloom_radio',
+        label: '1980 Vintage Philips Radio',
+        category: 'Heirloom',
+        culturalTitle: 'ফিলিপছ ৰেডিঅ’ (Wooden Valve Radio)',
+        details: 'Bhaben Koka listened to the 7:00 PM All India Radio Guwahati news every evening on his veranda.',
+        imageUrl: 'https://images.unsplash.com/photo-1545128485-c400e7702796?w=600',
+        icon: 'Radio',
+        provenance: {
+          verifiedBy: 'Family Keepsake Archive',
+          sourceDocument: 'Preserved on study shelf',
+          trustScore: 1.0,
+          isGroundTruth: true
+        }
+      }
+    ]);
+
+    await MemoryGraphEdge.insertMany([
+      {
+        edgeId: 'edge_1',
+        sourceNodeId: 'node_bhaben',
+        targetNodeId: 'node_deepak',
+        relationshipType: 'FATHER_OF',
+        label: 'Father ➔ Eldest Son',
+        context: 'Deepak cares for Koka daily and manages the family affairs.',
+        strength: 1.0,
+        provenance: { verifiedBy: 'Deepak Baruah', confidence: 1.0 }
+      },
+      {
+        edgeId: 'edge_2',
+        sourceNodeId: 'node_deepak',
+        targetNodeId: 'node_maina',
+        relationshipType: 'FATHER_OF',
+        label: 'Father ➔ Daughter',
+        context: 'Maina is Deepak’s daughter and Koka’s granddaughter.',
+        strength: 1.0,
+        provenance: { verifiedBy: 'Deepak Baruah', confidence: 1.0 }
+      },
+      {
+        edgeId: 'edge_3',
+        sourceNodeId: 'node_bhaben',
+        targetNodeId: 'node_maina',
+        relationshipType: 'GRANDFATHER_OF',
+        label: 'Paternal Grandfather ➔ Granddaughter',
+        context: 'Koka taught Maina how to fold Bihu pithas on the cane stool.',
+        strength: 1.0,
+        provenance: { verifiedBy: 'Deepak Baruah', confidence: 1.0 }
+      },
+      {
+        edgeId: 'edge_4',
+        sourceNodeId: 'node_bhaben',
+        targetNodeId: 'node_rohan',
+        relationshipType: 'GRANDFATHER_OF',
+        label: 'Grandfather ➔ Grandson',
+        context: 'Koka bought Rohan his first Bihu dhol from the Sivasagar market.',
+        strength: 1.0,
+        provenance: { verifiedBy: 'Deepak Baruah', confidence: 1.0 }
+      },
+      {
+        edgeId: 'edge_5',
+        sourceNodeId: 'node_bhaben',
+        targetNodeId: 'node_jorhat',
+        relationshipType: 'CAREER_LEGACY',
+        label: 'Worked 35 Years At',
+        context: 'Assam Tea Corporation senior superintendent from 1973 to 2008.',
+        strength: 1.0,
+        provenance: { verifiedBy: 'Tea Board records', confidence: 1.0 }
+      },
+      {
+        edgeId: 'edge_6',
+        sourceNodeId: 'node_bhaben',
+        targetNodeId: 'node_sivasagar',
+        relationshipType: 'ANCESTRAL_ROOT',
+        label: 'Born & Raised At',
+        context: 'Ancestral roots and childhood memories of Joysagar tank.',
+        strength: 1.0,
+        provenance: { verifiedBy: 'Oral Chronicle', confidence: 1.0 }
+      },
+      {
+        edgeId: 'edge_7',
+        sourceNodeId: 'node_maina',
+        targetNodeId: 'node_bihu',
+        relationshipType: 'MAKES_PITHA_FOR',
+        label: 'Makes Til Pitha For',
+        context: 'Maina travels from Bangalore every January for Magh Bihu.',
+        strength: 1.0,
+        provenance: { verifiedBy: 'Deepak Baruah', confidence: 1.0 }
+      },
+      {
+        edgeId: 'edge_8',
+        sourceNodeId: 'node_bhaben',
+        targetNodeId: 'node_heirloom_cup',
+        relationshipType: 'OWNS_HEIRLOOM',
+        label: 'Cherishes Wedding Gift',
+        context: '1968 wedding brass bowl used for morning curd and molasses.',
+        strength: 1.0,
+        provenance: { verifiedBy: 'Family Heirloom Registry', confidence: 1.0 }
+      },
+      {
+        edgeId: 'edge_9',
+        sourceNodeId: 'node_bhaben',
+        targetNodeId: 'node_heirloom_radio',
+        relationshipType: 'LISTENS_TO',
+        label: 'Listens to AIR Guwahati',
+        context: 'Evening veranda ritual with All India Radio broadcasts.',
+        strength: 1.0,
+        provenance: { verifiedBy: 'Deepak Baruah', confidence: 1.0 }
+      }
+    ]);
+  }
+
+  // --- Seed Everyday Heirlooms ---
+  const heirloomCount = await HeirloomObject.countDocuments();
+  if (heirloomCount === 0) {
+    console.log('[Seed] Seeding Everyday Heirloom Objects for Memory Scanner...');
+    await HeirloomObject.insertMany([
+      {
+        objectId: 'heirloom_kahi_bati',
+        name: '1968 Ancestral Brass Kahi-Bati',
+        vernacularName: 'কাঁহৰ কাঁহী-বাটি (Sarthebari Bell Metal Bowl)',
+        category: 'Kitchen & Tea',
+        photoUrl: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600',
+        tactileDescription: 'Heavy bell-metal brass, cool to the touch with soft carved floral borders along the rim.',
+        memoryStory: 'Gifted to Bhaben Koka and Pratibha Aita on their wedding day in Sivasagar in 1968 by Koka’s grandmother. For over 50 years, Koka has enjoyed fresh Doi-Chira and golden molasses from this very bowl.',
+        storyNarrator: 'Deepak Baruah (Son)',
+        associatedPerson: 'Pratibha Baruah (Wife)',
+        originYear: '1968',
+        provenanceVerification: {
+          verifiedBy: 'Deepak Baruah',
+          verificationLevel: 'Physical Heirloom on Dining Shelf, Guwahati'
+        }
+      },
+      {
+        objectId: 'heirloom_gamusa',
+        name: 'Handwoven Red Phulam Gamusa',
+        vernacularName: 'ৰঙা ফুলম গামোচা (Handloom Cotton Towel of Honor)',
+        category: 'Attire & Textile',
+        photoUrl: 'https://images.unsplash.com/photo-1607344645866-009c320c5ab8?w=600',
+        tactileDescription: 'Crisp hand-spun white cotton with raised red hand-embroidered floral motifs (kalka & orchids).',
+        memoryStory: 'Presented to Koka during the 1974 Bohag Bihu celebration in Jorhat when he organized the community Bihu husori. He always holds it gently across his shoulders when listening to Bihu dhol beats.',
+        storyNarrator: 'Deepak Baruah (Son)',
+        associatedPerson: 'Rohan (Grandson)',
+        originYear: '1974',
+        provenanceVerification: {
+          verifiedBy: 'Deepak Baruah',
+          verificationLevel: 'Preserved in Koka’s wardrobe'
+        }
+      },
+      {
+        objectId: 'heirloom_radio',
+        name: '1980 Vintage Philips Wooden Valve Radio',
+        vernacularName: 'ফিলিপছ কাঠৰ ৰেডিঅ’ (Philips Tabletop Receiver)',
+        category: 'Keepsake & Tool',
+        photoUrl: 'https://images.unsplash.com/photo-1545128485-c400e7702796?w=600',
+        tactileDescription: 'Polished teakwood casing with amber tuning dial and warm mechanical rotary knobs.',
+        memoryStory: 'Bought with his first managerial bonus at the Cinnamara tea estate in 1980. Every evening at 7:00 PM, the whole family would gather on the veranda to listen to AIR Guwahati news and Borgeet melodies.',
+        storyNarrator: 'Deepak Baruah (Son)',
+        associatedPerson: 'Deepak & Maina',
+        originYear: '1980',
+        provenanceVerification: {
+          verifiedBy: 'Deepak Baruah',
+          verificationLevel: 'Restored & kept on study desk'
+        }
+      },
+      {
+        objectId: 'heirloom_parker_pen',
+        name: '1982 Parker 51 Golden Nib Fountain Pen',
+        vernacularName: 'সোণালী নিবৰ ফাউণ্টেন কলম (Parker Pen)',
+        category: 'Keepsake & Tool',
+        photoUrl: 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=600',
+        tactileDescription: 'Smooth black resin body with a 14k brushed golden cap and fine arrow clip.',
+        memoryStory: 'Used by Koka to sign tea quality tasting reports and write heartfelt letters to Deepak when Deepak was studying in Guwahati. Koka always kept it in his top shirt pocket.',
+        storyNarrator: 'Deepak Baruah (Son)',
+        associatedPerson: 'Bhaben Koka',
+        originYear: '1982',
+        provenanceVerification: {
+          verifiedBy: 'Deepak Baruah',
+          verificationLevel: 'Family heirloom in bedside chest'
+        }
+      }
+    ]);
+  }
+
+  // --- Seed Safe Harbor Geofencing Zones ---
+  const safeZoneCount = await SafeHarborZone.countDocuments();
+  if (safeZoneCount === 0) {
+    console.log('[Seed] Seeding Safe Harbor Geofencing Zones...');
+    await SafeHarborZone.insertMany([
+      {
+        zoneId: 'zone_living_haven',
+        zoneName: 'Living Room & Bedroom Haven',
+        zoneType: 'Primary_Safe',
+        locationDescription: 'Main living room, armchair, and bedroom at Beltola residence',
+        coordinates: { lat: 26.1445, lng: 91.7362, radiusMeters: 30 },
+        activeHours: { start: '00:00', end: '23:59' },
+        currentStatus: 'Inside Safe Haven',
+        wanderingRiskScore: 8
+      },
+      {
+        zoneId: 'zone_veranda_garden',
+        zoneName: 'Veranda & Orchid Garden',
+        zoneType: 'Secondary_Safe',
+        locationDescription: 'Open-air morning stroll corridor with cane chairs and potted orchids',
+        coordinates: { lat: 26.1446, lng: 91.7364, radiusMeters: 20 },
+        activeHours: { start: '06:00', end: '19:00' },
+        currentStatus: 'Inside Safe Haven',
+        wanderingRiskScore: 22
+      },
+      {
+        zoneId: 'zone_front_perimeter',
+        zoneName: 'Beltola Front Gate Perimeter',
+        zoneType: 'Perimeter_Boundary',
+        locationDescription: 'Gate leading to lane towards Beltola market',
+        coordinates: { lat: 26.1449, lng: 91.7368, radiusMeters: 15 },
+        activeHours: { start: '07:00', end: '18:00' },
+        currentStatus: 'Inside Safe Haven',
+        wanderingRiskScore: 65
+      }
+    ]);
+  }
+
+  // --- Seed Caregiver Journal Observations ---
+  const journalCount = await CaregiverJournal.countDocuments();
+  if (journalCount === 0) {
+    console.log('[Seed] Seeding Caregiver Journal & AI Council logs...');
+    await CaregiverJournal.insertMany([
+      {
+        timestamp: new Date(Date.now() - 86400000 * 2),
+        timeOfDay: 'Morning',
+        observation: 'Koka woke up cheerful. Enjoyed his morning Doi-Chira in the ancestral brass bowl and pointed at the Kopou orchid blooming on the veranda.',
+        elderMood: 'Calm & Joyful',
+        triggersIdentified: ['Morning Freshness', 'Familiar Brass Bowl'],
+        deEscalationApplied: {
+          protocolUsed: 'Positive Reminiscence Anchoring',
+          actionTaken: 'Sat together naming orchids and humming a morning Borgeet.',
+          outcome: 'Resolved Calmly'
+        },
+        aiCouncilAnalysis: {
+          clinicalInsight: 'High orientation and positive affect stimulated by tactile heirloom object.',
+          empathySuggestion: 'Continue reinforcing morning routine with authentic tea ritual.',
+          factVerificationNote: 'Verified: Brass bowl is confirmed wedding gift from 1968.',
+          recommendedNextStep: 'Present Level 1 Photo Recall game during peak morning alertness.'
+        }
+      },
+      {
+        timestamp: new Date(Date.now() - 86400000),
+        timeOfDay: 'Evening (Sundowning Period)',
+        observation: 'Around 5:45 PM as dusk settled, Koka looked around restlessly and asked where his briefcase was, saying the tea factory bell was about to ring.',
+        elderMood: 'Anxious / Restless',
+        triggersIdentified: ['Twilight Sundowning', 'Past Work Routine Identity'],
+        deEscalationApplied: {
+          protocolUsed: 'Validation & Sensory Reminiscence',
+          actionTaken: 'Deepak gently affirmed: "Your work at the tea estate is completed with honors, Koka. Everything is safe." Turned on warm yellow lamps and played soft flute music.',
+          outcome: 'Resolved Calmly'
+        },
+        aiCouncilAnalysis: {
+          clinicalInsight: 'Circadian sundowning triggered by dimming natural light. Excellent non-pharmacological response by son.',
+          empathySuggestion: 'Never contradict or say "You retired 18 years ago". Reassure safety and sense of accomplishment.',
+          factVerificationNote: 'Verified: Bhaben retired as Senior Superintendent in 2008.',
+          recommendedNextStep: 'Ensure ambient warm lighting is turned on automatically at 5:00 PM.'
+        }
+      }
+    ]);
+  }
+
+  // --- Seed Voice Biomarkers ---
+  const voiceCount = await VoiceBiomarker.countDocuments();
+  if (voiceCount === 0) {
+    console.log('[Seed] Seeding Acoustic Voice Biomarker Telemetry...');
+    await VoiceBiomarker.insertMany([
+      {
+        timestamp: new Date(Date.now() - 86400000 * 3),
+        sessionType: 'MemoryLane',
+        timeOfDay: 'Morning',
+        metrics: {
+          speechLatencyMs: 1240,
+          pauseToSpeechRatio: 0.21,
+          hesitationMarkersCount: 1,
+          semanticRetrievalSeconds: 2.3,
+          acousticComfortIndex: 94,
+          diurnalFatigueFlag: false
+        },
+        notes: 'Rapid and cheerful recognition of granddaughter Maina. Vocal warmth optimal.'
+      },
+      {
+        timestamp: new Date(Date.now() - 86400000 * 2),
+        sessionType: 'StoryRecall',
+        timeOfDay: 'Twilight/Evening',
+        metrics: {
+          speechLatencyMs: 2850,
+          pauseToSpeechRatio: 0.38,
+          hesitationMarkersCount: 4,
+          semanticRetrievalSeconds: 4.8,
+          acousticComfortIndex: 82,
+          diurnalFatigueFlag: true
+        },
+        notes: 'Mild evening hesitation noted during Majuli Satra recall. Voice cadence quiet but calm.'
+      },
+      {
+        timestamp: new Date(Date.now() - 86400000),
+        sessionType: 'AIPetChat',
+        timeOfDay: 'Morning',
+        metrics: {
+          speechLatencyMs: 1380,
+          pauseToSpeechRatio: 0.23,
+          hesitationMarkersCount: 1,
+          semanticRetrievalSeconds: 2.6,
+          acousticComfortIndex: 92,
+          diurnalFatigueFlag: false
+        },
+        notes: 'Interactive dialogue with Moti the AI pet was effortless and smiling.'
+      }
+    ]);
+  }
+
+  // --- Seed WellRemember Family Board Posts ---
+  const boardCount = await FamilyBoardPost.countDocuments();
+  if (boardCount === 0) {
+    console.log('[Seed] Seeding WellRemember Family Memory Board cards...');
+    await FamilyBoardPost.insertMany([
+      {
+        authorName: 'Maina (Rhea)',
+        relation: 'Granddaughter',
+        location: 'Bangalore',
+        message: 'Koka, sending you so much love from Bangalore! Look at this photo from last Magh Bihu when we rolled warm Til Pitha together on the veranda. I cannot wait to be back in Guwahati this winter! Take your morning tea peacefully.',
+        photoUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600',
+        moderationStatus: 'Approved',
+        dignityCheckPassed: true,
+        pinnedForElderDisplay: true,
+        caregiverNotes: 'Verified video call snippet. Safe and deeply comforting for Koka.'
+      },
+      {
+        authorName: 'Rohan',
+        relation: 'Grandson',
+        location: 'Guwahati',
+        message: 'Koka! I practiced the 3-beat rhythm you taught me on the Bihu dhol today. Everyone at college cheered! Tomorrow morning after your stroll I will come play it live for you on the cane mora.',
+        photoUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600',
+        moderationStatus: 'Approved',
+        dignityCheckPassed: true,
+        pinnedForElderDisplay: true,
+        caregiverNotes: 'Rohan visiting tomorrow morning.'
+      },
+      {
+        authorName: 'Ananya Baruah',
+        relation: 'Daughter-in-law',
+        location: 'Golaghat',
+        message: 'Deuta, Deepak and I packed the finest first-flush golden tips orthodox tea from the estate today. He is driving back to Guwahati tomorrow with the fresh batch for your 4 PM tea!',
+        photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600',
+        moderationStatus: 'Approved',
+        dignityCheckPassed: true,
+        pinnedForElderDisplay: true,
+        caregiverNotes: 'Warm family reassurance.'
+      }
+    ]);
+  }
+
+  console.log('[Seed] Database populated successfully with culturally authentic NER data, verified memory graphs, and caregiver intelligence.');
 }
 
 module.exports = seedData;

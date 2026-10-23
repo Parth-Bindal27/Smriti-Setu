@@ -66,6 +66,16 @@ const GameSessionSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  completionStatus: {
+    type: String,
+    enum: ['completed', 'skipped', 'paused', 'unknown'],
+    default: 'completed'
+  },
+  responseMethod: {
+    type: String,
+    enum: ['touch', 'voice', 'text', 'choice', 'none'],
+    default: 'touch'
+  },
   needsReinforcement: {
     type: Boolean,
     default: false

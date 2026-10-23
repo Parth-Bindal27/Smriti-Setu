@@ -57,4 +57,42 @@ router.post('/reset-demo', async (req, res) => {
   }
 });
 
+const { saveSnapshot, restoreSnapshotIfEmpty, LATEST_SNAPSHOT_FILE } = require('../services/snapshotService');
+const fs = require('fs');
+
+// POST /api/system/snapshot/save — Save database state to disk snapshot
+router.post('/snapshot/save', async (req, res) => {
+  const result = await saveSnapshot(req.body.tag || 'manual_caregiver');
+  res.json(result);
+});
+
+// POST /api/system/snapshot/restore — Force restore from disk snapshot
+router.post('/snapshot/restore', async (req, res) => {
+  if (!fs.existsSync(LATEST_SNAPSHOT_FILE)) {
+    return res.status(404).json({ error: 'No snapshot file found on disk' });
+  }
+  const restored = await restoreSnapshotIfEmpty();
+  res.json({ success: restored, message: 'Database restored from disk snapshot.' });
+});
+
+// GET /api/system/snapshot/status — Check latest snapshot metadata
+router.get('/snapshot/status', (req, res) => {
+  if (!fs.existsSync(LATEST_SNAPSHOT_FILE)) {
+    return res.json({ exists: false, message: 'No snapshot recorded yet' });
+  }
+  try {
+    const raw = fs.readFileSync(LATEST_SNAPSHOT_FILE, 'utf8');
+    const parsed = JSON.parse(raw);
+    res.json({
+      exists: true,
+      timestamp: parsed.timestamp,
+      version: parsed.version,
+      tag: parsed.tag,
+      counts: parsed.counts
+    });
+  } catch (e) {
+    res.status(500).json({ error: 'Failed to read snapshot status', details: e.message });
+  }
+});
+
 module.exports = router;

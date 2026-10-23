@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smriti Setu (স্মৃতি সেতু) — Interactive Live Demo & Video Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0B0F17;
+      --card-dark: #131B2E;
+      --border-dark: #1E293B;
+      --amber: #F59E0B;
+      --amber-light: #FEF3C7;
+      --emerald: #10B981;
+      --emerald-light: #D1FAE5;
+      --indigo: #6366F1;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      padding: 1.5rem;
+      min-height: 100vh;
+    }
+
+    /* Top Control Bar */
+    .top-bar {
+      max-width: 1400px;
+      margin: 0 auto 1.5rem;
+      display: flex;
+      align-items: center;
+      justifyContent: space-between;
+      background: rgba(19, 27, 46, 0.85);
+      border: 1px solid var(--border-dark);
+      padding: 1rem 1.5rem;
+      border-radius: 18px;
+      backdrop-filter: blur(12px);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #F59E0B, #D97706);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justifyContent: center;
+      font-size: 24px;
+    }
+
+    .brand h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand span {
+      color: var(--amber);
+    }
+
+    .demo-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #F59E0B, #D97706);
+      color: #000;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #334155;
+      color: #F8FAFC;
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .btn-record {
+      background: #EF4444;
+      color: #FFF;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.75; }
+    }
+
+    /* Video Frame Container */
+    .video-viewport {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: #000;
+      border-radius: 24px;
+      border: 2px solid #1E293B;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    /* Narration Overlay Bar */
+    .narration-bar {
+      background: linear-gradient(90deg, #1E1B4B, #0F172A);
+      padding: 14px 24px;
+      border-bottom: 1px solid #312E81;
+      display: flex;
+      align-items: center;
+      justifyContent: space-between;
+    }
+
+    .narration-badge {
+      background: var(--amber);
+      color: #000;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .narration-text {
+      font-size: 17px;
+      font-weight: 600;
+      color: #E2E8F0;
+      flex-grow: 1;
+      margin-left: 14px;
+    }
+
+    /* Split Screen Showcase */
+    .screen-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 720px;
+      background: #0F172A;
+    }
+
+    @media (max-width: 1024px) {
+      .screen-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .app-frame {
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid #1E293B;
+    }
+
+    .frame-header {
+      padding: 12px 20px;
+      background: #111827;
+      border-bottom: 1px solid #1F2937;
+      display: flex;
+      align-items: center;
+      justifyContent: space-between;
+    }
+
+    .frame-title {
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .dot-green { background: #10B981; }
+    .dot-blue { background: #3B82F6; }
+
+    .frame-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+      background: #FBFBF9;
+      color: #0F172A;
+      transition: all 0.3s ease;
+    }
+
+    .frame-content.contrast {
+      background: #000000;
+      color: #FFFFFF;
+    }
+
+    .frame-content.caregiver-theme {
+      background: #0B0F17;
+      color: #F8FAFC;
+    }
+
+    /* Elderly App Internal UI Mockup */
+    .elder-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #E2E8F0;
+      margin-bottom: 1.25rem;
+    }
+
+    .elder-title {
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .elder-sub {
+      font-size: 14px;
+      color: #64748B;
+    }
+
+    .card-gentle {
+      background: #FFFFFF;
+      border-radius: 18px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+
+    .frame-content.contrast .card-gentle {
+      background: #18181B;
+      border: 2px solid var(--amber);
+      color: #FFF;
+    }
+
+    .checkin-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .emotion-btn {
+      background: #F8FAFC;
+      border: 2px solid #E2E8F0;
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .emotion-btn:hover, .emotion-btn.active {
+      background: #FEF3C7;
+      border-color: #F59E0B;
+      color: #92400E;
+    }
+
+    /* Caregiver Internal UI Mockup */
+    .caregiver-metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 1.25rem;
+    }
+
+    .metric-card {
+      background: #131B2E;
+      border: 1px solid #1E293B;
+      border-radius: 14px;
+      padding: 1rem;
+    }
+
+    .metric-val {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--amber);
+      margin: 4px 0;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .copilot-panel {
+      background: #131B2E;
+      border: 1px solid #1E293B;
+      border-radius: 16px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .agent-pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-right: 6px;
+    }
+
+    /* Virtual Cursor */
+    #cursor {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23F59E0B' stroke='%23000' stroke-width='2'%3E%3Cpath d='M3 3l7 18 3-7 7-3L3 3z'/%3E%3C/svg%3E") no-repeat;
+      pointer-events: none;
+      z-index: 9999;
+      transition: top 0.6s cubic-bezier(0.25, 1, 0.5, 1), left 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Control Header -->
+  <div class="top-bar">
+    <div class="brand">
+      <div class="brand-logo">🌸</div>
+      <div>
+        <h1>Smriti Setu <span>(স্মৃতি সেতু)</span></h1>
+        <p style="font-size: 12px; color: var(--text-muted);">National Competition Video Demo & Walkthrough Generator</p>
+      </div>
+    </div>
+
+    <div class="demo-controls">
+      <button class="btn btn-outline" id="resetBtn" onclick="resetDemo()">↺ Reset</button>
+      <button class="btn btn-primary" id="playBtn" onclick="togglePlayDemo()">▶ Play 60s Demo Walkthrough</button>
+      <button class="btn btn-record" id="recordBtn" onclick="startScreenRecording()">⏺ Record Video (WebM / MP4)</button>
+    </div>
+  </div>
+
+  <!-- Main Showcase Container -->
+  <div class="video-viewport" id="viewport">
+    <div id="cursor"></div>
+
+    <!-- Active Step Narration Banner -->
+    <div class="narration-bar">
+      <span class="narration-badge" id="stepBadge">Scene 1 / 7</span>
+      <span class="narration-text" id="stepText">Welcoming Dashboard: Non-coercive daily check-in with high contrast & multilingual support.</span>
+      <span style="font-size: 13px; color: var(--amber);" id="timerText">00:00</span>
+    </div>
+
+    <!-- Split Screen Viewport -->
+    <div class="screen-grid">
+
+      <!-- LEFT: Elderly Application (Port 3001) -->
+      <div class="app-frame">
+        <div class="frame-header">
+          <div class="frame-title">
+            <span class="dot dot-green"></span>
+            <span>Elderly Companion App (Port 3001)</span>
+          </div>
+          <span style="font-size: 12px; color: #10B981; font-weight: 700;">● Safe Offline Mode Active</span>
+        </div>
+
+        <div class="frame-content" id="elderContent">
+          <!-- Elder Header -->
+          <div class="elder-header">
+            <div>
+              <div class="elder-title" id="greetingTitle">নমস্কাৰ, ভবেন ককা! 🌸</div>
+              <div class="elder-sub" id="greetingDate">শুক্ৰবাৰ, ২৩ অক্টোবৰ • বেলতলা, গুৱাহাটী</div>
+            </div>
+            <div style="display: flex; gap: 6px;">
+              <button class="emotion-btn" id="contrastBtn" style="padding: 6px 10px; font-size: 12px;" onclick="toggleContrast()">🌙 Contrast</button>
+              <button class="emotion-btn" id="langBtn" style="padding: 6px 10px; font-size: 12px;" onclick="cycleLanguage()">🌐 অসমীয়া</button>
+            </div>
+          </div>
+
+          <!-- Gentle Daily Checkin -->
+          <div class="card-gentle" id="checkinCard">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 style="font-size: 18px; font-weight: 800;" id="checkinQuestion">আজি আপোনাৰ মনটো কেনে লাগিছে?</h3>
+              <span style="font-size: 12px; background: #FEF3C7; color: #92400E; padding: 2px 8px; border-radius: 6px; font-weight: 700;">Non-punitive</span>
+            </div>
+            <p style="font-size: 13px; color: #64748B; margin-top: 2px;" id="checkinSub">Choose how your heart feels today peacefully:</p>
+            
+            <div class="checkin-btns">
+              <button class="emotion-btn" id="moodCalm" onclick="selectMood('calm', this)">🌸 শান্ত আৰু আৰামদায়ক (Calm)</button>
+              <button class="emotion-btn" id="moodHappy" onclick="selectMood('happy', this)">☀️ আনন্দিত (Joyful)</button>
+              <button class="emotion-btn" id="moodNostalgic" onclick="selectMood('nostalgic', this)">📖 পুৰণি স্মৃতি (Nostalgic)</button>
+              <button class="emotion-btn" id="moodTired" onclick="selectMood('tired', this)">🍵 অলপ জিৰণি (Restful)</button>
+            </div>
+
+            <div id="checkinFeedback" style="display: none; margin-top: 10px; padding: 10px; background: #D1FAE5; color: #065F46; border-radius: 10px; font-size: 13px; font-weight: 700;">
+              ✨ Thank you for sharing your heart with us today.
+            </div>
+          </div>
+
+          <!-- Today's Featured Challenge Card -->
+          <div class="card-gentle" id="challengeCard">
+            <div style="display: flex; justify-content: space-between;">
+              <span style="font-size: 11px; background: #EEF2FF; color: #4F46E5; padding: 3px 8px; border-radius: 6px; font-weight: 800;">DAILY MEMORY ACTIVITY</span>
+              <span style="font-size: 12px; color: #64748B;">Low-Pressure</span>
+            </div>
+            <h4 style="font-size: 18px; font-weight: 800; margin: 8px 0 4px;" id="challengeTitle">ৰঙালী বিহুত কোনটো বাদ্যৰ ছন্দত আমাৰ মন নাচি উঠে?</h4>
+            <p style="font-size: 13px; color: #64748B; margin-bottom: 12px;">Which rhythmic instrument brings joy to the Bihu festival?</p>
+            
+            <div id="challengeChoices" style="display: flex; flex-direction: column; gap: 8px;">
+              <button class="emotion-btn" id="choiceDhol" onclick="answerChallenge(true)">🥁 বিহু ঢোল আৰু পেঁপা (Bihu Dhol)</button>
+              <button class="emotion-btn" id="choiceSitar" onclick="answerChallenge(false)">🎻 চেতাৰ (Sitar)</button>
+              <button class="emotion-btn" id="choiceUnsure" onclick="answerUnsure()">💭 মনত পৰা নাই (I'm not sure right now)</button>
+            </div>
+
+            <div id="hintBox" style="display: none; margin-top: 8px; padding: 8px 12px; background: #FEF3C7; border: 1px solid #FCD34D; color: #92400E; border-radius: 8px; font-size: 12px; font-weight: 700;">
+              💡 Gentle Clue: ই কাঠ আৰু চামৰাৰে তৈয়াৰী, বিহুনামৰ লগত বাজে।
+            </div>
+
+            <div id="challengeSuccess" style="display: none; margin-top: 8px; padding: 10px; background: #DCFCE7; color: #166534; border-radius: 10px; font-size: 13px; font-weight: 700;">
+              🌸 Wonderful memory! Recorded as joyful participation.
+            </div>
+          </div>
+
+          <!-- Daily Routine Companion -->
+          <div class="card-gentle">
+            <h4 style="font-size: 16px; font-weight: 800; margin-bottom: 8px;">Caregiver's Routine Reminders</h4>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #F8FAFC; border-radius: 10px; margin-bottom: 6px;">
+              <div>
+                <span style="font-size: 13px; font-weight: 700;">☕ 07:30 AM — পুৱাৰ চাহ আৰু বাৰান্দা</span>
+                <p style="font-size: 11px; color: #64748B;">Morning fresh tea on the veranda</p>
+              </div>
+              <button class="emotion-btn" id="routineCheck" style="padding: 4px 10px; font-size: 12px;" onclick="toggleRoutine(this)">✓ Done</button>
+            </div>
+          </div>
+
+          <!-- 4 Exclusive Dementia Cognitive Games Showcase -->
+          <div class="card-gentle" id="gamesCard" style="border: 2px solid #FDE68A; background: #FFFBEB;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-size: 11px; background: #FEF3C7; color: #92400E; padding: 3px 8px; border-radius: 6px; font-weight: 800;">5 EXCLUSIVE DEMENTIA COGNITIVE GAMES</span>
+              <span style="font-size: 11px; color: #059669; font-weight: 700;">● Non-Diagnostic</span>
+            </div>
+            <h4 style="font-size: 15px; font-weight: 800; margin-bottom: 6px; color: #78350F;">Personalized Everyday Cognitive Activities</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+              <button class="emotion-btn" id="gameDetective" style="padding: 8px; font-size: 12px; flex-direction: column; align-items: flex-start; text-align: left;" onclick="previewGame('detective')">
+                <span style="font-weight: 800;">🔍 Everyday Detective</span>
+                <span style="font-size: 10px; color: #64748B;">Spot beloved household items</span>
+              </button>
+              <button class="emotion-btn" id="gameSound" style="padding: 8px; font-size: 12px; flex-direction: column; align-items: flex-start; text-align: left;" onclick="previewGame('sound')">
+                <span style="font-weight: 800;">🔔 Sound-to-Memory</span>
+                <span style="font-size: 10px; color: #64748B;">Acoustic bell & rain recall</span>
+              </button>
+              <button class="emotion-btn" id="gameRecipe" style="padding: 8px; font-size: 12px; flex-direction: column; align-items: flex-start; text-align: left;" onclick="previewGame('recipe')">
+                <span style="font-weight: 800;">☕ Recipe Rebuilder</span>
+                <span style="font-size: 10px; color: #64748B;">Step sequence for Assam Tea</span>
+              </button>
+              <button class="emotion-btn" id="gameGarden" style="padding: 8px; font-size: 12px; flex-direction: column; align-items: flex-start; text-align: left;" onclick="previewGame('garden')">
+                <span style="font-weight: 800;">🌸 Garden of Memories</span>
+                <span style="font-size: 10px; color: #64748B;">Sensory veranda sanctuary</span>
+              </button>
+              <button class="emotion-btn" id="gameFocus" style="grid-column: span 2; padding: 8px; font-size: 12px; flex-direction: column; align-items: flex-start; text-align: left; background: #FEF9C3; border-color: #FACC15;" onclick="previewGame('focus')">
+                <span style="font-weight: 800; color: #854D0E;">🎯 Focus & Peripheral Awareness</span>
+                <span style="font-size: 10px; color: #713F12;">Center golden diya anchor with peripheral target detection & no time pressure</span>
+              </button>
+            </div>
+            <div id="gamePreviewBox" style="display: none; margin-top: 8px; padding: 8px 12px; background: #FFF; border-radius: 8px; font-size: 12px; font-weight: 700; color: #92400E; border: 1px solid #FCD34D;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Caregiver Clinical Portal (Port 3000) -->
+      <div class="app-frame">
+        <div class="frame-header">
+          <div class="frame-title">
+            <span class="dot dot-blue"></span>
+            <span>Caregiver Clinical Portal (Port 3000)</span>
+          </div>
+          <span style="font-size: 12px; color: var(--amber); font-weight: 700;">⚡ Real-Time Socket.IO Active</span>
+        </div>
+
+        <div class="frame-content caregiver-theme" id="caregiverContent">
+          <!-- Metrics Grid -->
+          <div class="caregiver-metric-grid">
+            <div class="metric-card">
+              <div class="metric-label">Cognitive Stability Score</div>
+              <div class="metric-val" id="stabilityVal">94.2%</div>
+              <div style="font-size: 11px; color: #10B981;">↑ Dignity-focused unhurried pace</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Voice Latency Trend</div>
+              <div class="metric-val" id="latencyVal">1.4s</div>
+              <div style="font-size: 11px; color: #10B981;">● Normal speech rhythm</div>
+            </div>
+          </div>
+
+          <!-- Multi-Agent Copilot Deliberation -->
+          <div class="copilot-panel">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+              <span style="font-size: 13px; font-weight: 800; color: #FFF;">Multi-Agent Clinical Copilot (Ikigai)</span>
+              <span style="font-size: 11px; background: #312E81; color: #A5B4FC; padding: 2px 6px; border-radius: 4px;">3-Agent Active</span>
+            </div>
+            
+            <div style="margin-bottom: 8px;">
+              <span class="agent-pill" style="background: rgba(16, 185, 129, 0.2); color: #34D399;">Gerontologist</span>
+              <span style="font-size: 12px; color: #CBD5E1;">"Patient Bhaben shows calm cognitive stability during morning cultural recall."</span>
+            </div>
+            <div style="margin-bottom: 8px;">
+              <span class="agent-pill" style="background: rgba(59, 130, 246, 0.2); color: #60A5FA;">Communicator</span>
+              <span style="font-size: 12px; color: #CBD5E1;">"Recommended vernacular prompt: Offer second cup of Ronga Saah at 11 AM."</span>
+            </div>
+          </div>
+
+          <!-- Real-Time Accessibility Governance -->
+          <div class="copilot-panel">
+            <h4 style="font-size: 13px; font-weight: 800; margin-bottom: 10px; color: #FFF;">Adaptive Dashboard & Remote Accessibility Governance</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+              <div>
+                <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Push Language to Elder:</label>
+                <select id="remoteLang" style="width: 100%; padding: 6px; background: #0B0F17; color: #FFF; border: 1px solid #334155; border-radius: 6px; font-size: 12px;">
+                  <option value="as">অসমীয়া (Assamese)</option>
+                  <option value="hi">हिन्दी (Hindi)</option>
+                  <option value="en">English</option>
+                  <option value="bn">বাংলা (Bengali)</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 4px;">Interaction Mode:</label>
+                <select style="width: 100%; padding: 6px; background: #0B0F17; color: #FFF; border: 1px solid #334155; border-radius: 6px; font-size: 12px;">
+                  <option>Mixed (Voice + Touch)</option>
+                  <option>Touch Only</option>
+                  <option>Voice Only</option>
+                </select>
+              </div>
+            </div>
+
+            <button class="btn btn-primary" id="pushSyncBtn" style="width: 100%; justify-content: center; font-size: 13px; padding: 8px;" onclick="simulateCaregiverSync()">
+              ⚡ Push Live Settings to Elder Screen
+            </button>
+          </div>
+
+          <!-- Real-time Live Log -->
+          <div style="background: #0B0F17; border-radius: 10px; padding: 10px; border: 1px solid #1E293B;">
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Live Socket Event Stream:</div>
+            <div id="socketLogs" style="font-family: monospace; font-size: 11px; color: #10B981;">
+              &gt; [Socket.IO] Elder connected from Guwahati (NER-Beltola)<br>
+              &gt; [Session] Check-in loaded: Emotional Well-being<br>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let isPlaying = false;
+    let demoStep = 0;
+    let demoTimer = null;
+    let currentSeconds = 0;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+
+    const cursor = document.getElementById('cursor');
+    const stepBadge = document.getElementById('stepBadge');
+    const stepText = document.getElementById('stepText');
+    const timerText = document.getElementById('timerText');
+
+    function moveCursorTo(elementId, callback) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const viewportRect = document.getElementById('viewport').getBoundingClientRect();
+
+      cursor.style.display = 'block';
+      cursor.style.top = (rect.top - viewportRect.top + rect.height / 2) + 'px';
+      cursor.style.left = (rect.left - viewportRect.left + rect.width / 2) + 'px';
+
+      setTimeout(() => {
+        if (callback) callback();
+      }, 700);
+    }
+
+    const DEMO_SCENES = [
+      {
+        text: "Scene 1: Welcoming Dashboard — Personalized greeting & localized date without any blocking exams.",
+        action: () => {
+          moveCursorTo('greetingTitle');
+        }
+      },
+      {
+        text: "Scene 2: Accessibility in Action — 1-tap High Contrast Mode toggle for visually impaired seniors.",
+        action: () => {
+          moveCursorTo('contrastBtn', () => {
+            toggleContrast();
+            setTimeout(toggleContrast, 2000);
+          });
+        }
+      },
+      {
+        text: "Scene 3: Multilingual Support — Instant switch between Hindi, Assamese & English without reload.",
+        action: () => {
+          moveCursorTo('langBtn', () => {
+            cycleLanguage();
+          });
+        }
+      },
+      {
+        text: "Scene 4: Dignified Emotional Check-in — Non-punitive mood tracking with warm celebratory feedback.",
+        action: () => {
+          moveCursorTo('moodCalm', () => {
+            selectMood('calm', document.getElementById('moodCalm'));
+          });
+        }
+      },
+      {
+        text: "Scene 5: Daily Challenge & State Machine — Cultural recall with gentle hint scaffolding & bounded retries.",
+        action: () => {
+          moveCursorTo('choiceDhol', () => {
+            document.getElementById('hintBox').style.display = 'block';
+            setTimeout(() => {
+              answerChallenge(true);
+            }, 1200);
+          });
+        }
+      },
+      {
+        text: "Scene 6: 4 Exclusive Cognitive Games — Everyday Detective, Web Audio Sound Quest, Recipe Rebuilder & Garden of Memories.",
+        action: () => {
+          moveCursorTo('gameSound', () => {
+            previewGame('sound');
+            setTimeout(() => {
+              previewGame('detective');
+            }, 2000);
+          });
+        }
+      },
+      {
+        text: "Scene 7: Real-Time Caregiver Sync — Live settings push over Socket.IO updating elder dashboard instantly.",
+        action: () => {
+          moveCursorTo('pushSyncBtn', () => {
+            simulateCaregiverSync();
+          });
+        }
+      }
+    ];
+
+    function togglePlayDemo() {
+      if (isPlaying) {
+        pauseDemo();
+      } else {
+        startDemo();
+      }
+    }
+
+    function startDemo() {
+      isPlaying = true;
+      document.getElementById('playBtn').innerHTML = "⏸ Pause Demo";
+      runStep();
+      demoTimer = setInterval(() => {
+        currentSeconds++;
+        const mins = String(Math.floor(currentSeconds / 60)).padStart(2, '0');
+        const secs = String(currentSeconds % 60).padStart(2, '0');
+        timerText.innerText = `${mins}:${secs}`;
+      }, 1000);
+    }
+
+    function pauseDemo() {
+      isPlaying = false;
+      document.getElementById('playBtn').innerHTML = "▶ Resume Demo";
+      clearInterval(demoTimer);
+    }
+
+    function resetDemo() {
+      pauseDemo();
+      demoStep = 0;
+      currentSeconds = 0;
+      timerText.innerText = "00:00";
+      cursor.style.display = 'none';
+      document.getElementById('checkinFeedback').style.display = 'none';
+      document.getElementById('challengeSuccess').style.display = 'none';
+      document.getElementById('hintBox').style.display = 'none';
+      stepBadge.innerText = "Scene 1 / 7";
+      stepText.innerText = DEMO_SCENES[0].text;
+    }
+
+    function runStep() {
+      if (!isPlaying) return;
+      if (demoStep >= DEMO_SCENES.length) {
+        stepText.innerText = "Demo Walkthrough Complete! Smriti Setu preserves memories and kinship.";
+        stepBadge.innerText = "Complete";
+        pauseDemo();
+        return;
+      }
+
+      const scene = DEMO_SCENES[demoStep];
+      stepBadge.innerText = `Scene ${demoStep + 1} / ${DEMO_SCENES.length}`;
+      stepText.innerText = scene.text;
+      scene.action();
+
+      demoStep++;
+      setTimeout(() => {
+        if (isPlaying) runStep();
+      }, 4500);
+    }
+
+    function toggleContrast() {
+      const elder = document.getElementById('elderContent');
+      elder.classList.toggle('contrast');
+    }
+
+    let langIndex = 0;
+    const languages = [
+      { code: 'hi', label: '🌐 हिन्दी', title: 'नमस्ते, भवेन दादाजी! 🌸', q: 'आज आपका मन कैसा है?' },
+      { code: 'en', label: '🌐 English', title: 'Hello, Bhaben Koka! 🌸', q: 'How are you feeling today?' },
+      { code: 'as', label: '🌐 অসমীয়া', title: 'নমস্কাৰ, ভবেন ককা! 🌸', q: 'আজি আপোনাৰ মনটো কেনে লাগিছে?' }
+    ];
+
+    function cycleLanguage() {
+      langIndex = (langIndex + 1) % languages.length;
+      const l = languages[langIndex];
+      document.getElementById('langBtn').innerText = l.label;
+      document.getElementById('greetingTitle').innerText = l.title;
+      document.getElementById('checkinQuestion').innerText = l.q;
+      addSocketLog(`[i18n] Language dynamically switched to ${l.code}`);
+    }
+
+    function selectMood(mood, btn) {
+      document.querySelectorAll('.emotion-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      document.getElementById('checkinFeedback').style.display = 'block';
+      addSocketLog(`[Check-in] Mood recorded: "${mood}" (Status: Warm Validated)`);
+    }
+
+    function answerChallenge(isCorrect) {
+      if (isCorrect) {
+        document.getElementById('challengeSuccess').style.display = 'block';
+        addSocketLog('[Challenge] Correct recall: Bihu Dhol (Attempts: 1, Hints: 1)');
+        document.getElementById('stabilityVal').innerText = "96.5%";
+      }
+    }
+
+    function answerUnsure() {
+      addSocketLog('[Challenge] User chose "Not sure" -> Stored as neutral unknown (Zero penalty)');
+      alert('Recorded as peaceful unknown without deducting points or indicating decline.');
+    }
+
+    function toggleRoutine(btn) {
+      btn.innerText = btn.innerText.includes('Done') ? 'Completed ✓' : '✓ Done';
+      btn.style.background = '#10B981';
+      btn.style.color = '#FFF';
+      addSocketLog('[Routine] Morning Tea marked completed by elder');
+    }
+
+    function previewGame(type) {
+      const box = document.getElementById('gamePreviewBox');
+      box.style.display = 'block';
+
+      if (type === 'detective') {
+        box.innerHTML = '🔍 <strong>Everyday Detective:</strong> "Where is your favorite bell-metal tea cup on the veranda table?" → Object recognized in context!';
+        addSocketLog('[Game] Everyday Detective: Visual attention test completed (Score: 100%)');
+      } else if (type === 'sound') {
+        box.innerHTML = '🔔 <strong>Sound-to-Memory Quest:</strong> Playing Kamakhya Temple brass bell acoustic synthesis...';
+        playSynthesisBell();
+        addSocketLog('[Game] Sound-to-Memory Quest: Audio synthesized procedurally via native Web Audio API');
+      } else if (type === 'recipe') {
+        box.innerHTML = '☕ <strong>Recipe Rebuilder:</strong> Step 1: Boil Spring Water → Step 2: Steep Assam Orthodox Leaves → Step 3: Serve warm.';
+        addSocketLog('[Game] Recipe Rebuilder: Procedural memory timeline validated');
+      } else if (type === 'garden') {
+        box.innerHTML = '🌸 <strong>Garden of Memories:</strong> Planted 1x Foxtail Orchid (কপৌ ফুল) and 1x Sacred Tulsi in the courtyard.';
+        addSocketLog('[Game] Garden of Memories: Sensory sanctuary item added (Zero pressure)');
+      } else if (type === 'focus') {
+        box.innerHTML = '🎯 <strong>Focus & Peripheral Awareness:</strong> Central Diya beacon locked. Outer Golden Bell noticed in 1.8s without time pressure. Non-diagnostic engagement.';
+        playSynthesisBell();
+        addSocketLog('[Game] Focus & Peripheral Awareness: Target acknowledged. Non-diagnostic participation logged.');
+      }
+    }
+
+    function playSynthesisBell() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5 chime
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.8);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 1.8);
+      } catch (e) {}
+    }
+
+    function simulateCaregiverSync() {
+      const pushBtn = document.getElementById('pushSyncBtn');
+      pushBtn.innerText = "✓ Settings Broadcasted via Socket.IO!";
+      pushBtn.style.background = "#10B981";
+      addSocketLog('[Socket.IO Emit] caregiver:preferences-updated pushed to Elder App');
+      cycleLanguage();
+      setTimeout(() => {
+        pushBtn.innerText = "⚡ Push Live Settings to Elder Screen";
+        pushBtn.style.background = "linear-gradient(135deg, #F59E0B, #D97706)";
+      }, 2500);
+    }
+
+    function addSocketLog(msg) {
+      const logs = document.getElementById('socketLogs');
+      logs.innerHTML = `&gt; ${msg}<br>` + logs.innerHTML;
+    }
+
+    // 1-Click Browser Video Recorder
+    async function startScreenRecording() {
+      try {
+        const stream = await navigator.mediaDevices.getDisplayMedia({
+          video: { frameRate: { ideal: 30 } },
+          audio: false
+        });
+
+        recordedChunks = [];
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) recordedChunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(recordedChunks, { type: 'video/webm' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.style.display = 'none';
+          a.href = url;
+          a.download = 'Smriti_Setu_National_Competition_Demo.webm';
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+          }, 100);
+          document.getElementById('recordBtn').innerText = "⏺ Record Video (WebM / MP4)";
+        };
+
+        mediaRecorder.start();
+        document.getElementById('recordBtn').innerText = "⏹ Stop & Save Video";
+        document.getElementById('recordBtn').onclick = () => {
+          mediaRecorder.stop();
+          stream.getTracks().forEach(t => t.stop());
+          document.getElementById('recordBtn').onclick = startScreenRecording;
+        };
+
+        // Automatically start walkthrough
+        resetDemo();
+        startDemo();
+      } catch (err) {
+        alert('Recording started or cancelled: ' + err.message);
+      }
+    }
+  </script>
+</body>
+</html>

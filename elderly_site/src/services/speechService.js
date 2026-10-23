@@ -8,6 +8,7 @@ export const LOCALE_MAP = {
   bn: { primary: 'bn-IN', fallbacks: ['bn-BD', 'hi-IN'] },
   as: { primary: 'as-IN', fallbacks: ['bn-IN', 'hi-IN'] }, // Assamese phonetics align closely with Bengali voices if native 'as' is absent
   ne: { primary: 'ne-NP', fallbacks: ['ne-IN', 'hi-IN'] }, // Devanagari phonetics read reliably through Hindi voices
+  hi: { primary: 'hi-IN', fallbacks: ['hi', 'en-IN'] }
 };
 
 /**
@@ -152,8 +153,93 @@ export class SpeechService {
     };
 
     this.currentUtterance = utterance;
+    this._lastText = text;
+    this._lastLang = lang;
+    this._lastRate = rate;
     this._activeUtterances.push(utterance);
     this.synth.speak(utterance);
+  }
+
+  pause() {
+    if (this.synth && this.synth.speaking && !this.synth.paused) {
+      try {
+        this.synth.pause();
+        this._notify(false);
+      } catch (e) {
+        console.warn('Speech pause notice:', e);
+      }
+    }
+  }
+
+  resume() {
+    if (this.synth && this.synth.paused) {
+      try {
+        this.synth.resume();
+        this._notify(true);
+      } catch (e) {
+        console.warn('Speech resume notice:', e);
+      }
+    }
+  }
+
+  replay(callbacks = {}) {
+    if (this._lastText) {
+      this.speak(this._lastText, this._lastLang || 'en', this._lastRate || 0.85, callbacks);
+    }
+  }
+
+  /**
+   * Safe, Non-Punitive Speech-to-Text via Web Speech API
+   * Does NOT continuously record in the background.
+   * Isolates recognition errors from cognitive assessments.
+   */
+  startRecognition({ lang = 'as', onResult, onError, onEnd }) {
+    const SpeechRecognition = typeof window !== 'undefined'
+      ? (window.SpeechRecognition || window.webkitSpeechRecognition)
+      : null;
+
+    if (!SpeechRecognition) {
+      if (onError) onError({ code: 'not_supported', message: 'Speech recognition is not available in this browser.' });
+      return () => {};
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      const localeConfig = LOCALE_MAP[lang] || LOCALE_MAP.en;
+      recognition.lang = localeConfig.primary;
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      let recognized = false;
+
+      recognition.onresult = (event) => {
+        recognized = true;
+        const transcript = event.results[0][0].transcript;
+        if (onResult) onResult(transcript);
+      };
+
+      recognition.onerror = (event) => {
+        // Isolate microphone / silence errors from cognitive performance
+        if (onError) onError({ code: event.error || 'recognition_error', isCognitiveDecline: false });
+      };
+
+      recognition.onend = () => {
+        if (!recognized && onResult) {
+          // No text heard, graceful completion
+        }
+        if (onEnd) onEnd();
+      };
+
+      recognition.start();
+
+      return () => {
+        try { recognition.abort(); } catch (e) {}
+      };
+    } catch (err) {
+      if (onError) onError({ code: 'init_failed', message: err.message, isCognitiveDecline: false });
+      return () => {};
+    }
   }
 }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, Hash, FileText, Eye, CheckCircle2, Sparkles, ArrowRight, Compass, Grid2X2 } from 'lucide-react';
+import { Heart, Hash, FileText, Eye, CheckCircle2, Sparkles, ArrowRight, Compass, Grid2X2, Pencil, Video, Search, Music, CheckSquare } from 'lucide-react';
 
 export default function NavigationCards({ onSelectModule, t }) {
   const mods = t?.modules || {};
@@ -104,6 +104,136 @@ export default function NavigationCards({ onSelectModule, t }) {
       iconColor: '#7C3AED',
       bgColor: '#F5F3FF',
       borderColor: '#DDD6FE'
+    },
+    {
+      id: 'ai_pet',
+      title: mods.ai_pet?.title || 'Moti — AI Gentle Pet Companion (মোতি)',
+      subtitle: mods.ai_pet?.subtitle || 'Stroke, pet, and talk to your loyal golden companion. Enjoy calm rhythmic breathing and warm reassurance.',
+      badge: mods.ai_pet?.badge || 'Pawyaya Inspired • Tactile & Calm',
+      icon: Heart,
+      iconColor: '#D97706',
+      bgColor: '#FEF3C7',
+      borderColor: '#FDE68A'
+    },
+    {
+      id: 'heirloom_scanner',
+      title: mods.heirloom_scanner?.title || 'Heirloom & Keepsake Scanner (স্মৃতিৰ বাতি)',
+      subtitle: mods.heirloom_scanner?.subtitle || 'Touch or scan family brass cups, wedding gamusas, and radios to listen to verified oral history.',
+      badge: mods.heirloom_scanner?.badge || 'Meeshaim M. Inspired • Object Recall',
+      icon: Sparkles,
+      iconColor: '#0284C7',
+      bgColor: '#E0F2FE',
+      borderColor: '#BAE6FD'
+    },
+    {
+      id: 'family_board',
+      title: mods.family_board?.title || 'WellRemember Family Board (মৰমৰ চিঠি)',
+      subtitle: mods.family_board?.subtitle || 'Listen to warm voice greetings and see heartfelt photo cards sent by your loved ones across India.',
+      badge: mods.family_board?.badge || 'WellRememberBoard Inspired • Live Postcards',
+      icon: Heart,
+      iconColor: '#E11D48',
+      bgColor: '#FFE4E6',
+      borderColor: '#FECDD3'
+    },
+    {
+      id: 'pentamind_drawing',
+      title: mods.pentamind_drawing?.title || 'PentaMind Visuospatial Drawing (চিত্ৰ অংকন)',
+      subtitle: mods.pentamind_drawing?.subtitle || 'Gently trace and draw intersecting pentagons and clock faces with calm strokes. Clinical vector scoring.',
+      badge: mods.pentamind_drawing?.badge || 'PentaMind Research • Visuospatial Drawing',
+      icon: Pencil,
+      iconColor: '#8B5CF6',
+      bgColor: '#F5F3FF',
+      borderColor: '#DDD6FE'
+    },
+    {
+      id: 'virtual_presence',
+      title: mods.virtual_presence?.title || 'Family Virtual Presence Room (পৰিয়ালৰ মুখনি)',
+      subtitle: mods.virtual_presence?.subtitle || 'See familiar video greetings from Deepak in Golaghat and Maina in Bangalore whenever you need comfort.',
+      badge: mods.virtual_presence?.badge || 'Relief Inspired • Empathetic Companion Room',
+      icon: Video,
+      iconColor: '#DB2777',
+      bgColor: '#FDF2F8',
+      borderColor: '#FBCFE8'
+    },
+    {
+      id: 'everyday_detective',
+      title: mods.everyday_detective?.title || 'Everyday Detective (চিনাকি দৃশ্য)',
+      subtitle: mods.everyday_detective?.subtitle || 'Explore familiar household scenes like the morning tea veranda and cozy kitchen to spot beloved items.',
+      badge: mods.everyday_detective?.badge || 'Exclusive • Visual Attention & Everyday Association',
+      icon: Eye,
+      iconColor: '#D97706',
+      bgColor: '#FEF3C7',
+      borderColor: '#FDE68A'
+    },
+    {
+      id: 'sound_memory_quest',
+      title: mods.sound_memory_quest?.title || 'Sound-to-Memory Quest (সুৰ আৰু স্মৃতি)',
+      subtitle: mods.sound_memory_quest?.subtitle || 'Listen to authentic acoustic sounds—temple bells, monsoon rain on tin roofs, and tea garden train whistles.',
+      badge: mods.sound_memory_quest?.badge || 'Exclusive • Auditory Attention & Reminiscence',
+      icon: Compass,
+      iconColor: '#0284C7',
+      bgColor: '#E0F2FE',
+      borderColor: '#BAE6FD'
+    },
+    {
+      id: 'recipe_rebuilder',
+      title: mods.recipe_rebuilder?.title || 'Recipe Rebuilder (পাকঘৰৰ সোৱাদ)',
+      subtitle: mods.recipe_rebuilder?.subtitle || 'Recreate cherished recipes like Assam Red Tea step-by-step using visual cards and gentle guidance.',
+      badge: mods.recipe_rebuilder?.badge || 'Exclusive • Procedural Recall & Sequencing',
+      icon: CheckCircle2,
+      iconColor: '#16A34A',
+      bgColor: '#F0FDF4',
+      borderColor: '#BBF7D0'
+    },
+    {
+      id: 'garden_of_memories',
+      title: mods.garden_of_memories?.title || 'Garden of Memories (স্মৃতিৰ ফুলনি)',
+      subtitle: mods.garden_of_memories?.subtitle || 'Nurture your peaceful courtyard garden: choose orchids, marigolds, and sacred tulsi in a calm sanctuary.',
+      badge: mods.garden_of_memories?.badge || 'Exclusive • Creative Choice & Sensory Sanctuary',
+      icon: Heart,
+      iconColor: '#EC4899',
+      bgColor: '#FDF2F8',
+      borderColor: '#FBCFE8'
+    },
+    {
+      id: 'focus_peripheral',
+      title: mods.focus_peripheral?.title || 'Focus & Peripheral Awareness (দৃষ্টিকেন্দ্ৰ আৰু চাৰিওফাল)',
+      subtitle: mods.focus_peripheral?.subtitle || 'Gently rest your gaze on the central golden diya while noticing targets appearing in the outer corners.',
+      badge: mods.focus_peripheral?.badge || 'Exclusive • Visual Attention & Periphery',
+      icon: Eye,
+      iconColor: '#D97706',
+      bgColor: '#FEF3C7',
+      borderColor: '#FDE68A'
+    },
+    {
+      id: 'focus_finder',
+      title: mods.focus_finder?.title || 'Focus Finder (মনোযোগ সন্ধান)',
+      subtitle: mods.focus_finder?.subtitle || 'Search illustrated domestic scenes like the tea veranda, kitchen, and courtyard to spot requested items.',
+      badge: mods.focus_finder?.badge || 'Visual Search & Attention',
+      icon: Search,
+      iconColor: '#D97706',
+      bgColor: '#FFFBEB',
+      borderColor: '#FDE68A'
+    },
+    {
+      id: 'smriti_match_quest',
+      title: mods.smriti_match_quest?.title || 'Smriti Match Quest (স্মৃতি মিলন)',
+      subtitle: mods.smriti_match_quest?.subtitle || 'Purble Place-inspired matching with a grid of visible cards. Select a card, then find its identical twin.',
+      badge: mods.smriti_match_quest?.badge || 'Visible Grid Discrimination',
+      icon: CheckSquare,
+      iconColor: '#059669',
+      bgColor: '#ECFDF5',
+      borderColor: '#A7F3D0'
+    },
+    {
+      id: 'tune_memory',
+      title: mods.tune_memory?.title || 'Tune Memory (সুৰ স্মৃতি)',
+      subtitle: mods.tune_memory?.subtitle || 'Listen to authentic sounds—temple bells, flutes, and rain—and identify or recall the melodic order.',
+      badge: mods.tune_memory?.badge || 'Auditory Sequencing & Recall',
+      icon: Music,
+      iconColor: '#DB2777',
+      bgColor: '#FDF2F8',
+      borderColor: '#FBCFE8'
     }
   ];
 

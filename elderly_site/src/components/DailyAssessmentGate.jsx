@@ -93,6 +93,9 @@ export default function DailyAssessmentGate({ onComplete, selectedLanguage = 'as
   const [isValidating, setIsValidating] = useState(false);
   const [answersLog, setAnswersLog] = useState([]);
   const [isFinished, setIsFinished] = useState(false);
+  const [showWellnessCheck, setShowWellnessCheck] = useState(false);
+  const [wellnessSelected, setWellnessSelected] = useState(null);
+  const [wellnessSubmitting, setWellnessSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   // Internal language state — initialized from prop, can be changed within the gate
   const [activeLang, setActiveLang] = useState(selectedLanguage);
@@ -299,6 +302,7 @@ export default function DailyAssessmentGate({ onComplete, selectedLanguage = 'as
   };
 
   // 5. Advance to next question or complete
+  // 5. Advance to next question or complete
   const handleNext = async () => {
     speechService.stop();
     setValidationResult(null);
@@ -307,24 +311,69 @@ export default function DailyAssessmentGate({ onComplete, selectedLanguage = 'as
     if (currentIndex + 1 < questions.length) {
       setCurrentIndex(prev => prev + 1);
     } else {
-      // Completed all questions -> submit to backend for AI Trend Tracking
-      setIsFinished(true);
+      // Completed all questions -> move to morning wellness & anomaly check
+      setShowWellnessCheck(true);
+      const wellnessPrompt = activeLang === 'as'
+        ? 'ককা, আজি পুৱা আপোনাৰ গা আৰু মূৰটো কেনেকুৱা লাগিছে?'
+        : activeLang === 'bn'
+          ? 'দাদু, আজ সকালে শরীর আর মাথা কেমন লাগছে?'
+          : activeLang === 'ne'
+            ? 'हजुरबुबा, आज बिहान तपाईंको शरीर र टाउको कस्तो छ?'
+            : 'Koka, how is your head and body feeling this peaceful morning?';
+      speechService.speak(wellnessPrompt, activeLang);
+    }
+  };
 
-      const score = answersLog.filter(a => a.isCorrect).length;
+  const handleWellnessChoice = async (choice) => {
+    setWellnessSelected(choice);
+    setWellnessSubmitting(true);
+    speechService.stop();
+
+    const score = answersLog.filter(a => a.isCorrect).length;
+
+    // Submit assessment questions
+    try {
+      await fetch(`${apiUrl}/api/assessment/submit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          answers: answersLog,
+          totalQuestions: questions.length,
+          score
+        })
+      });
+    } catch (e) {}
+
+    // If abnormal symptom (dizziness or headache), report anomaly
+    if (choice === 'dizziness' || choice === 'headache') {
       try {
-        await fetch(`${apiUrl}/api/assessment/submit`, {
+        await fetch(`${apiUrl}/api/health-monitoring/report-anomaly`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            answers: answersLog,
-            totalQuestions: questions.length,
-            score
+            type: 'reported_headache_dizziness',
+            severity: choice === 'headache' ? 'moderate' : 'mild',
+            title: choice === 'headache'
+              ? 'Morning Throbbing Headache Reported'
+              : 'Morning Dizziness & Unsteadiness Reported',
+            description: `Elder reported ${choice} during morning orientation check-in. Persistent observation requested.`,
+            persistenceHours: 24,
+            beFastMarkers: { balance: choice === 'dizziness' },
+            metrics: { orientationAccuracyDelta: score < 4 ? -30 : 0 }
           })
         });
-      } catch (err) {
-        console.warn('Submit error:', err);
-      }
+      } catch (e) {}
+
+      const gentleAck = activeLang === 'as'
+        ? 'একো চিন্তা নকৰিব। দীপকক জনোৱা হৈছে। অনুগ্ৰহ কৰি শান্তভাৱে বহক।'
+        : 'Do not worry at all. Deepak has been gently notified. Please sit back comfortably.';
+      speechService.speak(gentleAck, activeLang);
     }
+
+    setTimeout(() => {
+      setWellnessSubmitting(false);
+      setIsFinished(true);
+    }, 1600);
   };
 
   const handleRepeatQuestion = () => {
@@ -347,6 +396,161 @@ export default function DailyAssessmentGate({ onComplete, selectedLanguage = 'as
           <h2 style={{ color: 'var(--text-main)', fontSize: '28px' }}>
             প্ৰস্তুত কৰা হৈছে... Preparing your peaceful daily check-in...
           </h2>
+        </div>
+      </div>
+    );
+  }
+
+  // Morning Wellness & Persistent Symptom Check Screen
+  if (showWellnessCheck && !isFinished) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #FAF8F5 0%, #EFF6FF 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '2rem'
+      }}>
+        <div className="focus-card" style={{ maxWidth: '780px', textAlign: 'center', padding: '3.5rem 2.5rem' }}>
+          <div style={{
+            width: '84px',
+            height: '84px',
+            borderRadius: '50%',
+            background: 'rgba(217, 119, 6, 0.15)',
+            color: 'var(--accent-amber)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 1.5rem',
+            boxShadow: '0 8px 24px rgba(217, 119, 6, 0.15)'
+          }}>
+            <Heart size={44} />
+          </div>
+
+          <span style={{
+            fontSize: '14px',
+            fontWeight: '700',
+            color: '#B45309',
+            backgroundColor: '#FEF3C7',
+            padding: '4px 14px',
+            borderRadius: '20px',
+            textTransform: 'uppercase',
+            display: 'inline-block',
+            marginBottom: '1rem'
+          }}>
+            প্ৰভাতী সুস্থতা পৰীক্ষা • Morning Wellness Check
+          </span>
+
+          <h2 style={{ fontSize: '32px', marginBottom: '12px', color: 'var(--text-main)' }}>
+            {activeLang === 'as' ? 'ককা, আজি পুৱা আপোনাৰ অনুভৱ কেনেকুৱা?' :
+             activeLang === 'bn' ? 'দাদু, আজ সকালে শরীর আর মাথা কেমন লাগছে?' :
+             activeLang === 'ne' ? 'हजुरबुबा, आज बिहान तपाईंको शरीर र टाउको कस्तो छ?' :
+             'Koka, how is your head and body feeling this peaceful morning?'}
+          </h2>
+
+          <p style={{ fontSize: '20px', color: 'var(--text-muted)', marginBottom: '2.5rem' }}>
+            {activeLang === 'as' ? 'তলৰ যিকোনো এটা বাছনি কৰক, যাতে আমি আপোনাৰ বাবে শ্ৰেষ্ঠ যত্ন ল’ব পাৰোঁ।' :
+             'Please choose how you are feeling so we can ensure you are fully comfortable.'}
+          </p>
+
+          {wellnessSubmitting ? (
+            <div style={{ padding: '2rem', textAlign: 'center' }}>
+              <div style={{ fontSize: '42px', marginBottom: '12px' }}>🌿</div>
+              <h3 style={{ fontSize: '24px', color: '#059669', margin: 0 }}>
+                {activeLang === 'as' ? 'আপোনাৰ সঁহাৰি সংৰক্ষণ কৰা হৈছে... ধন্যবাদ!' : 'Response recorded gently... Thank you, Koka!'}
+              </h3>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <button
+                type="button"
+                onClick={() => handleWellnessChoice('calm')}
+                style={{
+                  backgroundColor: '#F0FDF4',
+                  border: '2px solid #86EFAC',
+                  borderRadius: '16px',
+                  padding: '1.25rem 2rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  cursor: 'pointer',
+                  textAlign: 'left'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                  <span style={{ fontSize: '32px' }}>🌸</span>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: '22px', color: '#166534' }}>
+                      {activeLang === 'as' ? 'একেবাৰে শান্ত আৰু সুস্থ' : 'Fresh, Calm & Peaceful'}
+                    </h3>
+                    <p style={{ margin: '4px 0 0 0', fontSize: '15px', color: '#4B5563' }}>
+                      {activeLang === 'as' ? 'কোনো অস্বস্তি নাই, মন আনন্দময়' : 'No dizziness or pain, feeling well'}
+                    </p>
+                  </div>
+                </div>
+                <CheckCircle2 size={28} color="#166534" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleWellnessChoice('dizziness')}
+                style={{
+                  backgroundColor: '#FFFBEB',
+                  border: '2px solid #FDE68A',
+                  borderRadius: '16px',
+                  padding: '1.25rem 2rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  cursor: 'pointer',
+                  textAlign: 'left'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                  <span style={{ fontSize: '32px' }}>💫</span>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: '22px', color: '#92400E' }}>
+                      {activeLang === 'as' ? 'অলপ মূৰ ঘূৰাইছে / অস্থিৰতা' : 'Slight Dizziness / Unsteadiness'}
+                    </h3>
+                    <p style={{ margin: '4px 0 0 0', fontSize: '15px', color: '#6B7280' }}>
+                      {activeLang === 'as' ? 'থিয় হ’লে সামান্য ঘূৰোৱা অনুভৱ' : 'Lightheaded when standing up'}
+                    </p>
+                  </div>
+                </div>
+                <ArrowRight size={24} color="#92400E" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleWellnessChoice('headache')}
+                style={{
+                  backgroundColor: '#FEF2F2',
+                  border: '2px solid #FECACA',
+                  borderRadius: '16px',
+                  padding: '1.25rem 2rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  cursor: 'pointer',
+                  textAlign: 'left'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                  <span style={{ fontSize: '32px' }}>🤕</span>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: '22px', color: '#991B1B' }}>
+                      {activeLang === 'as' ? 'তীব্ৰ মূৰৰ বিষ বা গধুৰতা' : 'Throbbing Headache / Heaviness'}
+                    </h3>
+                    <p style={{ margin: '4px 0 0 0', fontSize: '15px', color: '#6B7280' }}>
+                      {activeLang === 'as' ? 'মূৰটো গধুৰ লাগিছে, বিশ্ৰাম প্ৰয়োজন' : 'Pain in temples or back of head'}
+                    </p>
+                  </div>
+                </div>
+                <ArrowRight size={24} color="#991B1B" />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     );

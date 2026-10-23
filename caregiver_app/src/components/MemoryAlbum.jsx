@@ -14,11 +14,13 @@ import {
   Play,
   Filter,
   RefreshCw,
-  Compass
+  Compass,
+  Mic
 } from 'lucide-react';
 import VRPreviewModal from './VRPreviewModal';
 import AddMemoryModal from './AddMemoryModal';
 import LiveSessionPanel from './LiveSessionPanel';
+import ClaritiVoiceModal from './ClaritiVoiceModal';
 
 const CATEGORIES = ['All', 'Family', 'People', 'Places', 'Events', 'Childhood', 'Culture'];
 
@@ -35,6 +37,7 @@ export default function MemoryAlbum({
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [previewMemory, setPreviewMemory] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isClaritiModalOpen, setIsClaritiModalOpen] = useState(false);
   const [actionLoadingId, setActionLoadingId] = useState(null);
 
   // Filter memories by selected category
@@ -164,6 +167,28 @@ export default function MemoryAlbum({
           >
             <Plus size={18} />
             <span>+ Add Memory</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setIsClaritiModalOpen(true)}
+            style={{
+              background: 'linear-gradient(135deg, #EC4899, #8B5CF6)',
+              color: '#FFFFFF',
+              border: 'none',
+              borderRadius: '14px',
+              padding: '10px 18px',
+              fontSize: '14px',
+              fontWeight: '700',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              boxShadow: '0 4px 14px rgba(236, 72, 153, 0.35)'
+            }}
+          >
+            <Mic size={18} />
+            <span>Clariti Spoken Ingest</span>
           </button>
 
           <button
@@ -547,6 +572,16 @@ export default function MemoryAlbum({
           if (onRefresh) onRefresh();
         }}
         apiUrl={apiUrl}
+      />
+
+      {/* Clariti Spoken Voice-to-Memory Modal */}
+      <ClaritiVoiceModal
+        isOpen={isClaritiModalOpen}
+        onClose={() => setIsClaritiModalOpen(false)}
+        apiUrl={apiUrl}
+        onMemoryAdded={() => {
+          if (onRefresh) onRefresh();
+        }}
       />
     </div>
   );

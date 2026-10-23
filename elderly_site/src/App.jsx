@@ -13,24 +13,41 @@ import DemoSetupModal from './components/DemoSetupModal';
 import DailyAssessmentGate from './components/DailyAssessmentGate';
 import MemoryMatchGame from './components/MemoryMatchGame';
 import VisualSequenceGame from './components/VisualSequenceGame';
+import AIPetCompanion from './components/AIPetCompanion';
+import HeirloomScannerModule from './components/HeirloomScannerModule';
+import FamilyBoardModule from './components/FamilyBoardModule';
+import PentaMindCanvasModule from './components/PentaMindCanvasModule';
+import VirtualPresenceRoom from './components/VirtualPresenceRoom';
+import WelcomingDailyDashboard from './components/WelcomingDailyDashboard';
+import EverydayDetectiveGame from './components/EverydayDetectiveGame';
+import SoundMemoryQuestGame from './components/SoundMemoryQuestGame';
+import RecipeRebuilderGame from './components/RecipeRebuilderGame';
+import GardenOfMemoriesGame from './components/GardenOfMemoriesGame';
+import FocusPeripheralGame from './components/FocusPeripheralGame';
+import FocusFinderGame from './components/FocusFinderGame';
+import SmritiMatchQuestGame from './components/SmritiMatchQuestGame';
+import TuneMemoryGame from './components/TuneMemoryGame';
 import { TRANSLATIONS } from './i18n/translations';
 import { DEFAULT_MEMORY_ITEMS } from './data/memoryItems';
 import { speechService } from './services/speechService';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, WifiOff } from 'lucide-react';
 import { getSocket, emitActivityStart, emitSessionComplete } from './socket';
+import { initializeStorage, STORES } from './services/storage';
+import { fetchWithLocalFallback, drainPendingMutations, initializeNetworkListeners } from './services/offlineSync';
 
 export default function App() {
   const [profile, setProfile] = useState(null);
+  const [preferences, setPreferences] = useState(null);
   const [familyMembers, setFamilyMembers] = useState([]);
   const [routines, setRoutines] = useState([]);
   const [activeModule, setActiveModule] = useState(null);
   const [isDemoSetupOpen, setIsDemoSetupOpen] = useState(false);
   const [sessionCompletedNotice, setSessionCompletedNotice] = useState(false);
 
-  // Pre-UI Daily Memory Assessment Gate state (MANDATORY on load)
-  const [showAssessmentGate, setShowAssessmentGate] = useState(true);
+  // Voluntary Daily Memory Assessment Gate state (Non-coercive, voluntary)
+  const [showAssessmentGate, setShowAssessmentGate] = useState(false);
 
-  // Authoritative language state ('as', 'bn', 'ne', 'en')
+  // Authoritative language state ('as', 'bn', 'ne', 'hi', 'en')
   const [selectedLanguage, setSelectedLanguage] = useState('as');
   // Authoritative cultural region strictly bounded to the 8 sister states of the North Eastern Region of India
   const [selectedContentRegion] = useState('NER');
@@ -38,6 +55,8 @@ export default function App() {
 
   // Use Vite proxy for seamless routing on both localhost and mobile LAN IP
   const apiUrl = import.meta.env.VITE_API_URL || '';
+
+  const [isOffline, setIsOffline] = useState(typeof navigator !== 'undefined' ? !navigator.onLine : false);
 
   const handleLanguageChange = (newLang) => {
     speechService.stop();
@@ -67,30 +86,58 @@ export default function App() {
 
   const fetchData = async () => {
     try {
-      const [pRes, fRes, rRes] = await Promise.all([
-        fetch(`${apiUrl}/api/profile`),
-        fetch(`${apiUrl}/api/family`),
-        fetch(`${apiUrl}/api/routines`)
+      const [pRes, fRes, rRes, prefRes] = await Promise.all([
+        fetchWithLocalFallback('/api/profile', STORES.ELDER_PROFILES, apiUrl),
+        fetchWithLocalFallback('/api/family', STORES.CAREGIVER_PROFILES, apiUrl),
+        fetchWithLocalFallback('/api/routines', STORES.CARE_ROUTINES, apiUrl),
+        fetchWithLocalFallback('/api/profile/preferences', STORES.SYNC_METADATA, apiUrl)
       ]);
-      if (pRes.ok) {
-        const p = await pRes.json();
+
+      if (pRes.data) {
+        const p = pRes.data;
         setProfile(p);
-        if (p.primaryLanguage) {
-          const l = p.primaryLanguage.toLowerCase();
-          if (l.includes('nepali')) setSelectedLanguage('ne');
-          else if (l.includes('bengali') || l.includes('bangla')) setSelectedLanguage('bn');
-          else if (l.includes('english')) setSelectedLanguage('en');
-          else if (l.includes('assamese') || l.includes('as')) setSelectedLanguage('as');
-        }
       }
-      if (fRes.ok) setFamilyMembers(await fRes.json());
-      if (rRes.ok) setRoutines(await rRes.json());
+      if (prefRes.data) {
+        const prefs = prefRes.data;
+        setPreferences(prefs);
+        if (prefs.language) {
+          setSelectedLanguage(prefs.language);
+        }
+      } else if (pRes.data?.primaryLanguage) {
+        const l = pRes.data.primaryLanguage.toLowerCase();
+        if (l.includes('nepali')) setSelectedLanguage('ne');
+        else if (l.includes('bengali') || l.includes('bangla')) setSelectedLanguage('bn');
+        else if (l.includes('hindi')) setSelectedLanguage('hi');
+        else if (l.includes('english')) setSelectedLanguage('en');
+        else if (l.includes('assamese') || l.includes('as')) setSelectedLanguage('as');
+      }
+
+      if (fRes.data) setFamilyMembers(Array.isArray(fRes.data) ? fRes.data : []);
+      if (rRes.data) setRoutines(Array.isArray(rRes.data) ? rRes.data : []);
+
+      if (pRes.isOffline) setIsOffline(true);
+      else setIsOffline(false);
     } catch (err) {
-      console.warn('Backend fetch notice:', err.message);
+      console.warn('Backend fetch notice (serving from secure local store):', err.message);
+      setIsOffline(true);
     }
   };
 
   useEffect(() => {
+    initializeStorage().catch(err => console.warn('[App] Local storage init notice:', err));
+    initializeNetworkListeners(apiUrl);
+
+    const handleOnline = () => {
+      setIsOffline(false);
+      fetchData();
+    };
+    const handleOffline = () => {
+      setIsOffline(true);
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
     fetchData();
     checkAssessmentGate();
 
@@ -181,10 +228,22 @@ export default function App() {
       setShowAssessmentGate(true);
     });
 
+    // Real-Time Caregiver Preferences Update listener
+    socket.on('preferences:updated', (updatedPrefs) => {
+      console.log('⚡ [Elderly Site Socket] Preferences updated by caregiver:', updatedPrefs);
+      if (updatedPrefs) {
+        setPreferences(updatedPrefs);
+        if (updatedPrefs.language) {
+          setSelectedLanguage(updatedPrefs.language);
+        }
+      }
+    });
+
     return () => {
       socket.off('memory:selection-changed');
       socket.off('elderly:control');
       socket.off('assessment:force-gate');
+      socket.off('preferences:updated');
     };
   }, []);
 
@@ -204,15 +263,44 @@ export default function App() {
     }, 3500);
   };
 
-  // MANDATORY PRE-UI GATE: Completely blocks all access to main tabs/UI until completed
+  // Optional / Remote Assessment Gate
   if (showAssessmentGate) {
     return (
-      <DailyAssessmentGate
-        onComplete={handleAssessmentComplete}
-        selectedLanguage={selectedLanguage}
-        onLanguageChange={handleLanguageChange}
-        apiUrl={apiUrl}
-      />
+      <div style={{ minHeight: '100vh', background: '#F8FAFC' }}>
+        <div style={{
+          padding: '1rem 2rem',
+          background: '#FFFFFF',
+          borderBottom: '1px solid #E2E8F0',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <button
+            onClick={() => setShowAssessmentGate(false)}
+            style={{
+              padding: '10px 22px',
+              borderRadius: '14px',
+              border: '2px solid #CBD5E1',
+              background: '#FFFFFF',
+              fontSize: '18px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              color: '#334155'
+            }}
+          >
+            ← {t.mainMenu || 'Back to Home'}
+          </button>
+          <span style={{ color: '#64748B', fontWeight: 600, fontSize: '16px' }}>
+            {t.nerBadge || 'Voluntary Daily Memory Check'}
+          </span>
+        </div>
+        <DailyAssessmentGate
+          onComplete={handleAssessmentComplete}
+          selectedLanguage={selectedLanguage}
+          onLanguageChange={handleLanguageChange}
+          apiUrl={apiUrl}
+        />
+      </div>
     );
   }
 
@@ -231,48 +319,20 @@ export default function App() {
         t={t}
       />
 
-      {/* Celebratory Non-Infantile Affirmation Banner */}
-      {sessionCompletedNotice && (
-        <div style={{
-          maxWidth: '900px',
-          margin: '0 auto 2.5rem',
-          background: 'var(--affirm-green-light)',
-          border: '3px solid var(--affirm-green)',
-          borderRadius: '24px',
-          padding: '2.5rem',
-          textAlign: 'center',
-          boxShadow: 'var(--shadow-card)'
-        }}>
-          <div style={{
-            width: '80px',
-            height: '80px',
-            borderRadius: '50%',
-            background: 'var(--affirm-green)',
-            color: '#FFFFFF',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto 1.5rem'
-          }}>
-            <Sparkles size={48} />
-          </div>
-          <h2 style={{ fontSize: '36px', color: '#065F46', marginBottom: '10px' }}>
-            {t.completedBanner || 'A Beautiful Memory Session Completed!'}
-          </h2>
-          <p style={{ fontSize: '24px', color: '#047857' }}>
-            {t.completedBannerSub || 'Thank you for sharing your precious time and memories with us today.'}
-          </p>
-        </div>
-      )}
-
       {/* Module Rendering */}
       {!activeModule && (
-        <NavigationCards
+        <WelcomingDailyDashboard
+          profile={profile}
+          preferences={preferences}
+          selectedLanguage={selectedLanguage}
           onSelectModule={(modId) => {
             emitActivityStart(modId);
             setActiveModule(modId);
           }}
+          onOpenAssessment={() => setShowAssessmentGate(true)}
+          isOffline={isOffline}
           t={t}
+          apiUrl={apiUrl}
         />
       )}
 
@@ -376,6 +436,115 @@ export default function App() {
         <VisualSequenceGame
           onSessionComplete={handleSessionComplete}
           apiUrl={apiUrl}
+        />
+      )}
+
+      {activeModule === 'ai_pet' && (
+        <AIPetCompanion
+          onSessionComplete={handleSessionComplete}
+          apiUrl={apiUrl}
+          selectedLanguage={selectedLanguage}
+          t={t}
+        />
+      )}
+
+      {activeModule === 'heirloom_scanner' && (
+        <HeirloomScannerModule
+          onSessionComplete={handleSessionComplete}
+          apiUrl={apiUrl}
+          selectedLanguage={selectedLanguage}
+          t={t}
+        />
+      )}
+
+      {activeModule === 'family_board' && (
+        <FamilyBoardModule
+          onSessionComplete={handleSessionComplete}
+          apiUrl={apiUrl}
+          selectedLanguage={selectedLanguage}
+          t={t}
+        />
+      )}
+
+      {activeModule === 'pentamind_drawing' && (
+        <PentaMindCanvasModule
+          onSessionComplete={handleSessionComplete}
+          apiUrl={apiUrl}
+          selectedLanguage={selectedLanguage}
+          t={t}
+        />
+      )}
+
+      {activeModule === 'virtual_presence' && (
+        <VirtualPresenceRoom
+          onSessionComplete={handleSessionComplete}
+          apiUrl={apiUrl}
+          selectedLanguage={selectedLanguage}
+          t={t}
+        />
+      )}
+
+      {activeModule === 'everyday_detective' && (
+        <EverydayDetectiveGame
+          onSessionComplete={handleSessionComplete}
+          selectedLanguage={selectedLanguage}
+          t={t}
+        />
+      )}
+
+      {activeModule === 'sound_memory_quest' && (
+        <SoundMemoryQuestGame
+          onSessionComplete={handleSessionComplete}
+          selectedLanguage={selectedLanguage}
+          t={t}
+        />
+      )}
+
+      {activeModule === 'recipe_rebuilder' && (
+        <RecipeRebuilderGame
+          onSessionComplete={handleSessionComplete}
+          selectedLanguage={selectedLanguage}
+          t={t}
+        />
+      )}
+
+      {activeModule === 'garden_of_memories' && (
+        <GardenOfMemoriesGame
+          onSessionComplete={handleSessionComplete}
+          selectedLanguage={selectedLanguage}
+          t={t}
+        />
+      )}
+
+      {activeModule === 'focus_peripheral' && (
+        <FocusPeripheralGame
+          onSessionComplete={handleSessionComplete}
+          selectedLanguage={selectedLanguage}
+          t={t}
+        />
+      )}
+
+      {activeModule === 'focus_finder' && (
+        <FocusFinderGame
+          onSessionComplete={handleSessionComplete}
+          selectedLanguage={selectedLanguage}
+          t={t}
+        />
+      )}
+
+      {activeModule === 'smriti_match_quest' && (
+        <SmritiMatchQuestGame
+          onSessionComplete={handleSessionComplete}
+          selectedLanguage={selectedLanguage}
+          t={t}
+        />
+      )}
+
+      {activeModule === 'tune_memory' && (
+        <TuneMemoryGame
+          onSessionComplete={handleSessionComplete}
+          selectedLanguage={selectedLanguage}
+          t={t}
         />
       )}
 
