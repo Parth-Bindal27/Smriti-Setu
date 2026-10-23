@@ -16,7 +16,11 @@ const ElderlyProfileSchema = new mongoose.Schema({
   },
   region: {
     type: String,
-    default: 'Jorhat, Assam'
+    default: 'Pan-Indian / Cosmopolitan'
+  },
+  culturalRegion: {
+    type: String,
+    default: 'Pan-Indian / Cosmopolitan'
   },
   interests: [{
     type: String

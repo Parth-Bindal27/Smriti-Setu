@@ -18,7 +18,6 @@ export default function ExecutiveDashboard({
   profile,
   sessions,
   onOpenAssessmentConfig,
-  onOpenPitchMode,
   onOpenDoctorReport,
   onOpenSentinel
 }) {
@@ -116,27 +115,6 @@ export default function ExecutiveDashboard({
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-            <button
-              onClick={onOpenPitchMode}
-              style={{
-                background: 'linear-gradient(135deg, #F59E0B, #D97706)',
-                color: '#FFFFFF',
-                border: 'none',
-                borderRadius: '8px',
-                padding: '10px 18px',
-                fontSize: '13px',
-                fontWeight: '700',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                boxShadow: '0 4px 12px rgba(217, 119, 6, 0.4)'
-              }}
-            >
-              <Sparkles size={16} />
-              <span>Launch Live Split Demo</span>
-            </button>
-
             <button
               onClick={onOpenDoctorReport}
               style={{

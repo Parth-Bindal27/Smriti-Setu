@@ -10,7 +10,6 @@ import AICulturePlayground from './components/AICulturePlayground';
 import MobileConnectModal from './components/MobileConnectModal';
 import LiveSessionMonitor from './components/LiveSessionMonitor';
 import AssessmentManager from './components/AssessmentManager';
-import SharkTankPitchModal from './components/SharkTankPitchModal';
 import DoctorReportModal from './components/DoctorReportModal';
 import NeurologicalSentinel from './components/NeurologicalSentinel';
 import MemoryGraphExplorer from './components/MemoryGraphExplorer';
@@ -30,7 +29,6 @@ import {
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isMobileModalOpen, setIsMobileModalOpen] = useState(false);
-  const [isPitchModalOpen, setIsPitchModalOpen] = useState(false);
   const [isDoctorReportOpen, setIsDoctorReportOpen] = useState(false);
 
   const [profile, setProfile] = useState(null);
@@ -351,7 +349,6 @@ export default function App() {
         onTabChange={setActiveTab}
         onOpenMobileConnect={() => setIsMobileModalOpen(true)}
         onRefresh={fetchAll}
-        onOpenPitchMode={() => setIsPitchModalOpen(true)}
         onOpenDoctorReport={() => setIsDoctorReportOpen(true)}
       />
 
@@ -414,7 +411,6 @@ export default function App() {
             profile={profile}
             sessions={sessions}
             onOpenAssessmentConfig={() => setActiveTab('assessment')}
-            onOpenPitchMode={() => setIsPitchModalOpen(true)}
             onOpenDoctorReport={() => setIsDoctorReportOpen(true)}
             onOpenSentinel={() => setActiveTab('sentinel')}
           />
@@ -521,13 +517,6 @@ export default function App() {
         isOpen={isMobileModalOpen}
         onClose={() => setIsMobileModalOpen(false)}
         apiUrl={apiUrl}
-      />
-
-      <SharkTankPitchModal
-        isOpen={isPitchModalOpen}
-        onClose={() => setIsPitchModalOpen(false)}
-        apiUrl={apiUrl}
-        profile={profile}
       />
 
       <DoctorReportModal

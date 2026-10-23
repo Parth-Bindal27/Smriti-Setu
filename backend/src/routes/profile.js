@@ -30,6 +30,20 @@ router.put('/', async (req, res) => {
       Object.assign(profile, req.body);
     }
     await profile.save();
+
+    // Broadcast profile update via Socket.IO for zero-refresh sync
+    const io = req.app.get('io');
+    if (io) {
+      io.emit('profile:updated', profile);
+      io.emit('elderly:profile-updated', profile);
+    }
+    try {
+      const { broadcast } = require('../websocket');
+      if (typeof broadcast === 'function') {
+        broadcast({ type: 'PROFILE_UPDATED', profile });
+      }
+    } catch (wsErr) {}
+
     res.json(profile);
   } catch (err) {
     res.status(400).json({ error: err.message });

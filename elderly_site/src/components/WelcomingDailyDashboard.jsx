@@ -56,8 +56,8 @@ export default function WelcomingDailyDashboard({
   t,
   apiUrl
 }) {
-  const honorific = profile?.honorific || 'Koka';
-  const name = profile?.name || 'Bhaben Baruah';
+  const honorific = profile?.honorific || '';
+  const name = profile?.name || (selectedLanguage === 'hi' ? 'प्रिय मित्र' : selectedLanguage === 'bn' ? 'প্রিয় বন্ধু' : selectedLanguage === 'as' ? 'মৰমৰ বন্ধু' : 'Dear Friend');
   const firstName = name.split(' ')[0];
 
   // Daily Experience computation

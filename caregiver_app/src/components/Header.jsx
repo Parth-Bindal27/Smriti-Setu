@@ -7,7 +7,6 @@ export default function Header({
   onRefresh,
   activeTab,
   onTabChange,
-  onOpenPitchMode,
   onOpenDoctorReport
 }) {
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -126,37 +125,13 @@ export default function Header({
               <span className="badge-pill badge-indigo">Caregiver Executive Suite</span>
             </div>
             <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: '2px 0 0 0' }}>
-              Monitoring: <strong style={{ color: 'var(--text-main)' }}>{profile?.name || 'Bhaben Baruah'}</strong> ({profile?.honorific || 'Koka'}) • {profile?.hometown || 'Sivasagar, Assam'}
+              Monitoring: <strong style={{ color: 'var(--text-main)' }}>{profile?.name || 'Elder Profile'}</strong> ({profile?.honorific || 'Elder'}) • {profile?.hometown || profile?.region || 'India'}
             </p>
           </div>
         </div>
 
         {/* Action Controls */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-          {/* Shark Tank Pitch Mode Button */}
-          <button
-            onClick={onOpenPitchMode}
-            style={{
-              background: 'linear-gradient(135deg, #F59E0B, #D97706)',
-              color: '#FFFFFF',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '7px 14px',
-              fontSize: '13px',
-              fontWeight: '700',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              boxShadow: '0 2px 10px rgba(217, 119, 6, 0.35)',
-              transition: 'transform 0.1s'
-            }}
-            title="Open Shark Tank interactive dual-simulator and pitch deck"
-          >
-            <span style={{ fontSize: '15px' }}>🦈</span>
-            <span>Pitch Demo Mode</span>
-          </button>
-
           {/* Doctor Report Button */}
           <button
             onClick={onOpenDoctorReport}

@@ -9,7 +9,7 @@ import CulturalReminiscenceModule from './components/CulturalReminiscenceModule'
 import DailyRoutineModule from './components/DailyRoutineModule';
 import StorytellingModule from './components/StorytellingModule';
 import VRMemoryExperience from './components/VRMemoryExperience';
-import DemoSetupModal from './components/DemoSetupModal';
+import FirstTimeLanguageModal from './components/FirstTimeLanguageModal';
 import DailyAssessmentGate from './components/DailyAssessmentGate';
 import MemoryMatchGame from './components/MemoryMatchGame';
 import VisualSequenceGame from './components/VisualSequenceGame';
@@ -41,16 +41,23 @@ export default function App() {
   const [familyMembers, setFamilyMembers] = useState([]);
   const [routines, setRoutines] = useState([]);
   const [activeModule, setActiveModule] = useState(null);
-  const [isDemoSetupOpen, setIsDemoSetupOpen] = useState(false);
+  const [showLanguagePrompt, setShowLanguagePrompt] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return !localStorage.getItem('smriti_language_welcomed');
+  });
   const [sessionCompletedNotice, setSessionCompletedNotice] = useState(false);
 
   // Voluntary Daily Memory Assessment Gate state (Non-coercive, voluntary)
   const [showAssessmentGate, setShowAssessmentGate] = useState(false);
 
-  // Authoritative language state ('as', 'bn', 'ne', 'hi', 'en')
-  const [selectedLanguage, setSelectedLanguage] = useState('as');
-  // Authoritative cultural region strictly bounded to the 8 sister states of the North Eastern Region of India
-  const [selectedContentRegion] = useState('NER');
+  // Authoritative language state defaults to English ('en') on first launch
+  const [selectedLanguage, setSelectedLanguage] = useState(() => {
+    if (typeof window === 'undefined') return 'en';
+    return localStorage.getItem('smriti_user_language') || 'en';
+  });
+  
+  // Pan-India cultural region support
+  const [selectedContentRegion] = useState('ALL_INDIA');
   const [vrPresetMemories, setVrPresetMemories] = useState(null);
 
   // Use Vite proxy for seamless routing on both localhost and mobile LAN IP
@@ -58,9 +65,23 @@ export default function App() {
 
   const [isOffline, setIsOffline] = useState(typeof navigator !== 'undefined' ? !navigator.onLine : false);
 
+  const handleLanguagePromptSelect = (lang) => {
+    speechService.stop();
+    setSelectedLanguage(lang);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('smriti_user_language', lang);
+      localStorage.setItem('smriti_language_welcomed', 'true');
+    }
+    setShowLanguagePrompt(false);
+  };
+
   const handleLanguageChange = (newLang) => {
     speechService.stop();
     setSelectedLanguage(newLang);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('smriti_user_language', newLang);
+      localStorage.setItem('smriti_language_welcomed', 'true');
+    }
   };
 
   const checkAssessmentGate = async () => {
@@ -100,16 +121,20 @@ export default function App() {
       if (prefRes.data) {
         const prefs = prefRes.data;
         setPreferences(prefs);
-        if (prefs.language) {
+        const userSetLang = typeof window !== 'undefined' ? localStorage.getItem('smriti_user_language') : null;
+        if (!userSetLang && prefs.language) {
           setSelectedLanguage(prefs.language);
         }
       } else if (pRes.data?.primaryLanguage) {
-        const l = pRes.data.primaryLanguage.toLowerCase();
-        if (l.includes('nepali')) setSelectedLanguage('ne');
-        else if (l.includes('bengali') || l.includes('bangla')) setSelectedLanguage('bn');
-        else if (l.includes('hindi')) setSelectedLanguage('hi');
-        else if (l.includes('english')) setSelectedLanguage('en');
-        else if (l.includes('assamese') || l.includes('as')) setSelectedLanguage('as');
+        const userSetLang = typeof window !== 'undefined' ? localStorage.getItem('smriti_user_language') : null;
+        if (!userSetLang) {
+          const l = pRes.data.primaryLanguage.toLowerCase();
+          if (l.includes('nepali')) setSelectedLanguage('ne');
+          else if (l.includes('bengali') || l.includes('bangla')) setSelectedLanguage('bn');
+          else if (l.includes('hindi')) setSelectedLanguage('hi');
+          else if (l.includes('english')) setSelectedLanguage('en');
+          else if (l.includes('assamese') || l.includes('as')) setSelectedLanguage('as');
+        }
       }
 
       if (fRes.data) setFamilyMembers(Array.isArray(fRes.data) ? fRes.data : []);
@@ -239,11 +264,20 @@ export default function App() {
       }
     });
 
+    // Real-Time Profile Update listener from Caregiver
+    socket.on('profile:updated', (updatedProfile) => {
+      console.log('⚡ [Elderly Site Socket] Profile updated by caregiver:', updatedProfile);
+      if (updatedProfile) {
+        setProfile(updatedProfile);
+      }
+    });
+
     return () => {
       socket.off('memory:selection-changed');
       socket.off('elderly:control');
       socket.off('assessment:force-gate');
       socket.off('preferences:updated');
+      socket.off('profile:updated');
     };
   }, []);
 
@@ -311,7 +345,6 @@ export default function App() {
         profile={profile}
         activeModule={activeModule}
         onBackHome={() => setActiveModule(null)}
-        onOpenDemoSetup={() => setIsDemoSetupOpen(true)}
         onOpenAssessment={() => setShowAssessmentGate(true)}
         currentLang={selectedLanguage}
         selectedLanguage={selectedLanguage}
@@ -548,12 +581,11 @@ export default function App() {
         />
       )}
 
-      {/* Discrete Fallback Setup Modal */}
-      <DemoSetupModal
-        isOpen={isDemoSetupOpen}
-        onClose={() => setIsDemoSetupOpen(false)}
-        onDataUpdated={fetchData}
-        apiUrl={apiUrl}
+      {/* First-Time Visitor Language Choice Onboarding Modal */}
+      <FirstTimeLanguageModal
+        isOpen={showLanguagePrompt}
+        onSelectLanguage={handleLanguagePromptSelect}
+        currentLanguage={selectedLanguage}
       />
     </div>
   );

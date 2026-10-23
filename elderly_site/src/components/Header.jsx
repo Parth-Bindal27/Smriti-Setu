@@ -49,47 +49,29 @@ export default function Header({
       flexWrap: 'wrap',
       gap: '1.25rem'
     }}>
-      {/* Discrete Fallback Setup Button for Live Demo */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <button 
-          className="corner-caregiver-btn"
-          onClick={onOpenDemoSetup}
-          title="Discrete Caregiver & Demo Seeding Setup"
-        >
-          <Settings size={18} />
-          <span>{t.demoSetup || 'Caregiver Setup'}</span>
-        </button>
+      {/* Gentle Daily Check-in */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
         <button 
           className="corner-caregiver-btn"
           onClick={onOpenAssessment}
-          style={{ background: '#FEF3C7', color: '#92400E', borderColor: '#FCD34D' }}
-          title="Daily Memory Verification Check-in"
-        >
-          <ShieldCheck size={18} />
-          <span>দৈনিক পৰীক্ষা (Memory Check)</span>
-        </button>
-        <a 
-          href="http://localhost:3000"
-          target="_blank"
-          rel="noopener noreferrer"
           style={{
-            display: 'inline-flex',
+            background: '#FEF3C7',
+            color: '#92400E',
+            borderColor: '#FCD34D',
+            padding: '8px 18px',
+            borderRadius: '16px',
+            fontSize: '16px',
+            fontWeight: '700',
+            display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            textDecoration: 'none',
-            background: '#F8FAFC',
-            color: '#1E293B',
-            padding: '8px 14px',
-            borderRadius: '14px',
-            fontSize: '15px',
-            fontWeight: '600',
-            border: '1px solid #CBD5E1',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+            gap: '8px',
+            cursor: 'pointer'
           }}
-          title="Open Caregiver Dashboard in a new tab"
+          title="Daily Gentle Memory Verification Check-in"
         >
-          <span>🛡️ Caregiver Dashboard ↗</span>
-        </a>
+          <ShieldCheck size={20} />
+          <span>{t.memoryCheck || (currentLang === 'hi' ? 'दैनिक स्मृति जांच' : currentLang === 'bn' ? 'দৈনিক স্মৃতি যাচাই' : currentLang === 'as' ? 'দৈনিক স্মৃতি পৰীক্ষা' : 'Daily Memory Check-in')}</span>
+        </button>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
@@ -160,7 +142,7 @@ export default function Header({
           background: '#EFF6FF',
           color: '#1D4ED8',
           border: '1px solid #BFDBFE',
-          padding: '8px 16px',
+          padding: '8px 18px',
           borderRadius: '24px',
           fontSize: '17px',
           fontWeight: '700',
@@ -169,7 +151,7 @@ export default function Header({
           gap: '8px'
         }}>
           <span>🇮🇳</span>
-          <span>{t.nerBadge || 'North Eastern Region (NER)'}</span>
+          <span>{profile?.culturalRegion || profile?.region || t.indiaBadge || 'Culturally Grounded • India'}</span>
         </div>
 
         <div style={{
