@@ -48,6 +48,52 @@ export default function LiveSessionMonitor({ onSessionCompleted, activeTab = 'da
   const [cameraExpanded, setCameraExpanded] = useState(true);
   const [manualCameraCheck, setManualCameraCheck] = useState(false);
   const [actionFeedback, setActionFeedback] = useState('');
+  const [isDemoActive, setIsDemoActive] = useState(false);
+
+  const toggleDemoMode = () => {
+    setIsDemoActive(prev => {
+      const next = !prev;
+      if (next) {
+        setSessionState({
+          isActive: true,
+          activityTitle: 'Morning Cognitive Reminiscence & Orientation Gate',
+          activityType: 'daily_assessment',
+          status: 'Elder responding to Question 3 with calm deliberation',
+          attempts: 1,
+          hintsDelivered: 1,
+          responseTimeSec: 4.8,
+          userVoiceTranscript: 'Guwahati, Assam',
+          isCorrect: true,
+          lastUpdate: Date.now()
+        });
+        setCameraActive(true);
+        setStressScore(26);
+        setStressCategory('calm');
+        setAdaptiveNotice('● Dignity Sentinel: Elder is relaxed, latency normal (<5s)');
+        setActionFeedback('⚡ Live Presentation Demo Mode Activated — All Dignity Controls Operational');
+        setTimeout(() => setActionFeedback(''), 4000);
+      } else {
+        setSessionState({
+          isActive: false,
+          activityTitle: '',
+          activityType: '',
+          status: 'Idle — Awaiting Elder Activity',
+          attempts: 0,
+          hintsDelivered: 0,
+          responseTimeSec: 0,
+          userVoiceTranscript: '',
+          isCorrect: null,
+          lastUpdate: null
+        });
+        setCameraActive(false);
+        setStressScore(18);
+        setStressCategory('calm');
+        setActionFeedback('Demo Mode Stopped — Returning to Live Socket');
+        setTimeout(() => setActionFeedback(''), 3000);
+      }
+      return next;
+    });
+  };
 
   useEffect(() => {
     const socket = getSocket();
@@ -378,6 +424,27 @@ export default function LiveSessionMonitor({ onSessionCompleted, activeTab = 'da
               <span>{manualCameraCheck ? 'Hide Live Camera' : 'Check Live Camera'}</span>
             </button>
           )}
+
+          <button
+            onClick={toggleDemoMode}
+            style={{
+              background: isDemoActive ? '#DC2626' : 'linear-gradient(135deg, #059669, #047857)',
+              color: '#FFFFFF',
+              border: 'none',
+              padding: '0.45rem 0.95rem',
+              borderRadius: '10px',
+              fontSize: '0.82rem',
+              fontWeight: 800,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              boxShadow: isDemoActive ? '0 0 12px rgba(220, 38, 38, 0.4)' : '0 2px 8px rgba(5, 150, 105, 0.3)'
+            }}
+          >
+            <Activity size={14} />
+            <span>{isDemoActive ? '⏹ Stop Sentinel Test' : '⚡ Test Live Sentinel'}</span>
+          </button>
         </div>
       </div>
 
@@ -448,6 +515,51 @@ export default function LiveSessionMonitor({ onSessionCompleted, activeTab = 'da
                     transform: 'scaleX(-1)' // Natural mirror
                   }}
                 />
+              ) : isDemoActive ? (
+                <div style={{
+                  width: '100%',
+                  height: '100%',
+                  background: 'linear-gradient(180deg, #1E293B 0%, #0F172A 100%)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '12px',
+                  position: 'relative'
+                }}>
+                  <div style={{
+                    width: '85px',
+                    height: '85px',
+                    borderRadius: '20px',
+                    border: '2px dashed #10B981',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '40px',
+                    boxShadow: '0 0 16px rgba(16, 185, 129, 0.3)',
+                    position: 'relative'
+                  }}>
+                    🧓
+                    <span style={{
+                      position: 'absolute',
+                      bottom: '-7px',
+                      background: '#10B981',
+                      color: '#0F172A',
+                      fontSize: '8px',
+                      fontWeight: 800,
+                      padding: '1px 5px',
+                      borderRadius: '4px'
+                    }}>
+                      FACE TRACKED
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#34D399', fontWeight: 700, marginTop: '8px' }}>
+                    Live Sentinel Stream Active
+                  </div>
+                  <div style={{ fontSize: '10px', color: '#94A3B8' }}>
+                    Pulse: 72 bpm • Micro-expression: Calm
+                  </div>
+                </div>
               ) : (
                 <div style={{ textAlign: 'center', padding: '12px', color: '#64748B' }}>
                   <Shield size={32} color="#10B981" style={{ margin: '0 auto 6px auto' }} />
