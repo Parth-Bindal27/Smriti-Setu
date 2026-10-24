@@ -584,6 +584,139 @@ export default function WelcomingDailyDashboard({
         )}
       </div>
 
+      {/* 2.5 DEDICATED HIGHLIGHTED COMPANION: MOTI AI (NOT A GAME) */}
+      <div style={{
+        background: highContrast
+          ? '#18181B'
+          : 'linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 50%, #FDE68A 100%)',
+        borderRadius: '26px',
+        padding: '2rem 2.25rem',
+        border: highContrast ? '2px solid #F59E0B' : '3px solid #FCD34D',
+        marginBottom: '2.5rem',
+        boxShadow: highContrast ? 'none' : '0 8px 30px rgba(245, 158, 11, 0.15)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '24px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', maxWidth: '680px' }}>
+          <div style={{
+            width: '84px',
+            height: '84px',
+            borderRadius: '26px',
+            background: 'linear-gradient(135deg, #F59E0B, #D97706)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '44px',
+            boxShadow: '0 6px 20px rgba(217, 119, 6, 0.35)',
+            flexShrink: 0
+          }}>
+            🐕
+          </div>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px', flexWrap: 'wrap' }}>
+              <span style={{
+                background: '#D97706',
+                color: '#FFFFFF',
+                padding: '4px 12px',
+                borderRadius: '8px',
+                fontSize: '12px',
+                fontWeight: 800,
+                letterSpacing: '0.04em'
+              }}>
+                ALWAYS HERE FOR YOU • NOT A GAME
+              </span>
+              <span style={{ fontSize: '13px', color: '#047857', fontWeight: 800 }}>
+                ● 24/7 Empathetic Voice & Listening Friend
+              </span>
+            </div>
+            <h3 style={{
+              fontSize: `${28 * fontMultiplier}px`,
+              fontWeight: 800,
+              color: '#78350F',
+              margin: '0 0 6px 0'
+            }}>
+              {selectedLanguage === 'hi' ? '🐾 मोती से बात करें — आपका प्यारा AI साथी' :
+               selectedLanguage === 'as' ? '🐾 মোতিৰ লগত কথা পাতক — আপোনাৰ মৰমৰ সংগী' :
+               selectedLanguage === 'bn' ? '🐾 মোতির সাথে কথা বলুন — আপনার আদরের বন্ধু' :
+               '🐾 Talk with Moti — Your Caring AI Listening Companion'}
+            </h3>
+            <p style={{
+              fontSize: `${18 * fontMultiplier}px`,
+              color: '#92400E',
+              margin: 0,
+              lineHeight: 1.45
+            }}>
+              {selectedLanguage === 'hi' ? 'अकेलापन या घबराहट महसूस हो रही है? मोती से अपनी आवाज में बात करें या उसे सहलाएं। वह हमेशा आपको दिलासा और सुकून देने के लिए तैयार है।' :
+               selectedLanguage === 'as' ? 'মনটো গধুৰ বা অকলে লাগিছে নেকি? মোতিৰ লগত কথা পাতক বা মৰম কৰক। তেওঁ সদায় আপোনাক সান্ত্বনা আৰু মৰম দিবলৈ ওচৰতে আছে।' :
+               selectedLanguage === 'bn' ? 'একা বা উদ্বিগ্ন লাগছে? মোতির সাথে মুখে কথা বলুন বা তাকে আদর করুন। সে সবসময় আপনার পাশে আছে।' :
+               'Feeling lonely or uneasy? Talk to Moti with your own voice or gently stroke him. He is always here to comfort, reassure, and listen to your heart.'}
+            </p>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', flexShrink: 0 }}>
+          <button
+            type="button"
+            onClick={() => onSelectModule('ai_pet')}
+            style={{
+              background: '#059669',
+              color: '#FFFFFF',
+              border: 'none',
+              borderRadius: '18px',
+              padding: '16px 28px',
+              fontSize: `${20 * fontMultiplier}px`,
+              fontWeight: 800,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              boxShadow: '0 6px 20px rgba(5, 150, 105, 0.35)',
+              transition: 'transform 0.15s ease'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.03)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          >
+            <Mic size={24} />
+            <span>
+              {selectedLanguage === 'hi' ? '🎙️ मोती से बात करें (Speak to Moti)' :
+               selectedLanguage === 'as' ? '🎙️ মোতিৰ লগত কথা পাতক (Talk)' :
+               selectedLanguage === 'bn' ? '🎙️ মোতির সাথে কথা বলুন' :
+               '🎙️ Speak & Talk with Moti'}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onSelectModule('ai_pet')}
+            style={{
+              background: '#FFFFFF',
+              color: '#92400E',
+              border: '2px solid #FCD34D',
+              borderRadius: '16px',
+              padding: '12px 22px',
+              fontSize: `${17 * fontMultiplier}px`,
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+            }}
+          >
+            <Heart size={20} color="#D97706" />
+            <span>
+              {selectedLanguage === 'hi' ? '🖐️ सहलाएं एवं शांत सांस लें' :
+               selectedLanguage === 'as' ? '🖐️ মৰম কৰক আৰু উশাহ লওক' :
+               '🖐️ Stroke & Gentle Breathing'}
+            </span>
+          </button>
+        </div>
+      </div>
+
       {/* 3. FEATURED DAILY CHALLENGE (OPTIONAL & GENTLE) */}
       <div style={{
         background: cardContrastBg,
@@ -918,6 +1051,7 @@ export default function WelcomingDailyDashboard({
         }}>
           {GAME_REGISTRY
             .filter(game => {
+              if (game.id === 'ai_pet') return false; // Highlighted separately above as dedicated companion, NOT a game!
               if (selectedHubCategory === 'all') return true;
               return game.category === selectedHubCategory;
             })

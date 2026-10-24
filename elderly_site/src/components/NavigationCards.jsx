@@ -106,16 +106,6 @@ export default function NavigationCards({ onSelectModule, t }) {
       borderColor: '#DDD6FE'
     },
     {
-      id: 'ai_pet',
-      title: mods.ai_pet?.title || 'Moti — AI Gentle Pet Companion (মোতি)',
-      subtitle: mods.ai_pet?.subtitle || 'Stroke, pet, and talk to your loyal golden companion. Enjoy calm rhythmic breathing and warm reassurance.',
-      badge: mods.ai_pet?.badge || 'Pawyaya Inspired • Tactile & Calm',
-      icon: Heart,
-      iconColor: '#D97706',
-      bgColor: '#FEF3C7',
-      borderColor: '#FDE68A'
-    },
-    {
       id: 'heirloom_scanner',
       title: mods.heirloom_scanner?.title || 'Heirloom & Keepsake Scanner (স্মৃতিৰ বাতি)',
       subtitle: mods.heirloom_scanner?.subtitle || 'Touch or scan family brass cups, wedding gamusas, and radios to listen to verified oral history.',
@@ -246,6 +236,71 @@ export default function NavigationCards({ onSelectModule, t }) {
         <p style={{ fontSize: '24px', color: 'var(--text-muted)' }}>
           {t?.menuSub || 'Engage your mind with joyful nostalgia and gentle practice'}
         </p>
+      </div>
+
+      {/* Elevated Dedicated AI Companion Hero Section (NOT A GAME) */}
+      <div style={{
+        background: 'linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%)',
+        border: '3px solid #FCD34D',
+        borderRadius: '24px',
+        padding: '1.75rem 2rem',
+        marginBottom: '2rem',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '20px',
+        boxShadow: '0 8px 24px rgba(245, 158, 11, 0.12)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
+          <div style={{
+            fontSize: '40px',
+            background: 'linear-gradient(135deg, #F59E0B, #D97706)',
+            width: '72px',
+            height: '72px',
+            borderRadius: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 4px 14px rgba(217, 119, 6, 0.3)'
+          }}>
+            🐕
+          </div>
+          <div>
+            <span style={{
+              background: '#D97706',
+              color: '#FFFFFF',
+              fontSize: '12px',
+              fontWeight: '800',
+              padding: '3px 10px',
+              borderRadius: '6px'
+            }}>
+              SPECIAL COMPANION • NOT A GAME
+            </span>
+            <h3 style={{ fontSize: '24px', fontWeight: '800', color: '#78350F', margin: '4px 0 2px 0' }}>
+              🐾 Moti (মোতি / मोती) — Your Caring AI Listening Companion
+            </h3>
+            <p style={{ fontSize: '16px', color: '#92400E', margin: 0 }}>
+              Talk with Moti in your voice, stroke him gently, or take a peaceful rhythmic breath together.
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={() => onSelectModule('ai_pet')}
+          style={{
+            background: '#059669',
+            color: '#FFFFFF',
+            border: 'none',
+            borderRadius: '16px',
+            padding: '14px 24px',
+            fontSize: '18px',
+            fontWeight: '800',
+            cursor: 'pointer',
+            boxShadow: '0 4px 12px rgba(5, 150, 105, 0.3)'
+          }}
+        >
+          🎙️ Speak & Comfort with Moti
+        </button>
       </div>
 
       <div style={{
