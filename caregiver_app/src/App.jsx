@@ -406,7 +406,7 @@ export default function App() {
 
       <main style={{ maxWidth: '1350px', margin: '0 auto', padding: '1.75rem 1.5rem' }}>
         {/* Real-Time Live Session Monitor attached via Socket.IO */}
-        <LiveSessionMonitor onSessionCompleted={fetchAll} />
+        <LiveSessionMonitor onSessionCompleted={fetchAll} activeTab={activeTab} />
 
         {activeTab === 'dashboard' && (
           <ExecutiveDashboard

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Radio, Eye, Clock, HelpCircle, MessageSquare, CheckCircle, RefreshCw, AlertCircle, Sparkles, Volume2 } from 'lucide-react';
 import { getSocket } from '../socket';
 
-export default function LiveSessionMonitor({ onSessionCompleted }) {
+export default function LiveSessionMonitor({ onSessionCompleted, activeTab = 'dashboard' }) {
   const [sessionState, setSessionState] = useState({
     isActive: false,
     activityTitle: '',
@@ -115,6 +115,10 @@ export default function LiveSessionMonitor({ onSessionCompleted }) {
     const socket = getSocket();
     socket.emit('caregiver:control', { action, timestamp: Date.now() });
   };
+
+  if (!sessionState.isActive && activeTab !== 'dashboard') {
+    return null;
+  }
 
   return (
     <div style={{
