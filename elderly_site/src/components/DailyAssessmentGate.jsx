@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ShieldCheck, Mic, MicOff, Volume2, Sparkles, ArrowRight, CheckCircle2, Heart, HelpCircle } from 'lucide-react';
 import { speechService } from '../services/speechService';
 import { emitTelemetry } from '../socket';
+import ElderlyStressCameraSentinel from './ElderlyStressCameraSentinel';
 
 const DEFAULT_QUESTIONS = [
   {
@@ -99,6 +100,36 @@ export default function DailyAssessmentGate({ onComplete, selectedLanguage = 'as
   const [isLoading, setIsLoading] = useState(false);
   // Internal language state — initialized from prop, can be changed within the gate
   const [activeLang, setActiveLang] = useState(selectedLanguage);
+  const [latencySeconds, setLatencySeconds] = useState(0);
+  const [questionAttempts, setQuestionAttempts] = useState(1);
+  const [adaptiveAssistance, setAdaptiveAssistance] = useState(false);
+
+  // Latency & stress auto-hesitation timer
+  useEffect(() => {
+    let timer = null;
+    if (!validationResult && !isFinished && !showWellnessCheck) {
+      timer = setInterval(() => {
+        setLatencySeconds(prev => {
+          const next = prev + 1;
+          // After 7s hesitation, automatically offer gentle assistance options
+          if (next >= 7 && !adaptiveAssistance) {
+            setAdaptiveAssistance(true);
+          }
+          return next;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [currentIndex, validationResult, isFinished, showWellnessCheck, adaptiveAssistance]);
+
+  // Reset timers on question index change
+  useEffect(() => {
+    setLatencySeconds(0);
+    setQuestionAttempts(1);
+    setAdaptiveAssistance(false);
+  }, [currentIndex]);
 
   const LANG_OPTIONS = [
     { code: 'as', flag: '🏔️', label: 'অসমীয়া', short: 'AS' },
@@ -748,6 +779,54 @@ export default function DailyAssessmentGate({ onComplete, selectedLanguage = 'as
               />
             </div>
 
+            {/* Adaptive Assistance Cues (Auto-activated when hesitating > 7s or on stress) */}
+            {adaptiveAssistance && currentQ && currentQ.expectedAnswers && (
+              <div style={{
+                background: 'linear-gradient(135deg, #FEF3C7, #FFFBEB)',
+                border: '2px solid #FDE68A',
+                borderRadius: '16px',
+                padding: '1rem 1.25rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#92400E', fontWeight: 700, fontSize: '15px' }}>
+                  <Sparkles size={18} color="#D97706" />
+                  <span>সহজ সহায় (Take your time, or tap a familiar answer below):</span>
+                </div>
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                  {[
+                    currentQ.expectedAnswers[0],
+                    currentQ.category === 'identity' ? 'Radha Baruah' : (currentQ.category === 'family' ? 'Pratima' : 'Sivasagar'),
+                    currentQ.category === 'location' ? 'Guwahati' : (currentQ.expectedAnswers[1] || 'Assam')
+                  ].filter(Boolean).slice(0, 3).map((choice, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => {
+                        setUserAnswer(choice);
+                        setTimeout(() => handleValidate(), 200);
+                      }}
+                      style={{
+                        background: '#FFFFFF',
+                        border: '2px solid #F59E0B',
+                        color: '#0F172A',
+                        borderRadius: '12px',
+                        padding: '10px 18px',
+                        fontSize: '18px',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        boxShadow: '0 2px 8px rgba(245, 158, 11, 0.15)',
+                        transition: 'all 0.15s'
+                      }}
+                    >
+                      {choice}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Voice Input & Submit Bar */}
             <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', alignItems: 'center' }}>
               <button
@@ -844,6 +923,19 @@ export default function DailyAssessmentGate({ onComplete, selectedLanguage = 'as
           </div>
         )}
       </div>
+
+      {/* Real-Time Camera & Cognitive Stress Sentinel */}
+      <ElderlyStressCameraSentinel
+        activityTitle="Daily Cognitive Assessment"
+        activityType="assessment"
+        currentQuestionIndex={currentIndex}
+        attempts={questionAttempts}
+        latencySeconds={latencySeconds}
+        selectedLanguage={activeLang}
+        onAdaptiveIntervention={() => {
+          setAdaptiveAssistance(true);
+        }}
+      />
     </div>
   );
 }

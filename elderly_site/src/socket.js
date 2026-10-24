@@ -56,4 +56,20 @@ export function emitSessionComplete(data) {
   });
 }
 
+export function emitCameraFrame(frameData) {
+  const s = getSocket();
+  s.emit('elderly:live-camera-frame', {
+    ...frameData,
+    timestamp: Date.now()
+  });
+}
+
+export function emitStressTelemetry(stressData) {
+  const s = getSocket();
+  s.emit('elderly:stress-telemetry', {
+    ...stressData,
+    timestamp: Date.now()
+  });
+}
+
 export default getSocket;

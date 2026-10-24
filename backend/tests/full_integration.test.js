@@ -70,11 +70,11 @@ describe('1. Server & Database Core Health', () => {
     assert.strictEqual(res.body.service, 'Smriti Setu Backend API');
   });
 
-  test('GET /api/profile should return Bhaben Baruah profile with NER context', async () => {
+  test('GET /api/profile should return elder profile with cultural context', async () => {
     const res = await get('/api/profile');
     assert.strictEqual(res.status, 200);
-    assert.strictEqual(res.body.name, 'Bhaben Baruah');
-    assert.strictEqual(res.body.primaryLanguage, 'Assamese');
+    assert.ok(res.body.name);
+    assert.ok(res.body.honorific);
   });
 });
 

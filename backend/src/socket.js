@@ -78,12 +78,40 @@ function initSocketServer(httpServer) {
       io.emit('caregiver:session-completed-broadcast', payload);
     });
 
-    // 4. Caregiver Controls (Remote Pause, Skip, Force-Exit, or Gentle Voice Prompts)
+    // 4. Live Camera Frame & Cognitive Stress Sentinel from Elderly device
+    socket.on('elderly:live-camera-frame', (data) => {
+      const payload = {
+        ...data,
+        timestamp: Date.now(),
+        senderId: socket.id
+      };
+      io.to('room:caregiver').emit('caregiver:live-camera-stream', payload);
+      io.emit('caregiver:live-camera-stream-broadcast', payload);
+    });
+
+    // 5. Real-Time Stress & Cognitive Strain Telemetry
+    socket.on('elderly:stress-telemetry', (data) => {
+      const payload = {
+        ...data,
+        timestamp: Date.now(),
+        senderId: socket.id
+      };
+      io.to('room:caregiver').emit('caregiver:stress-telemetry', payload);
+      io.emit('caregiver:stress-telemetry-broadcast', payload);
+    });
+
+    // 6. Caregiver Controls & Adaptive Guidance (Chimes, Difficulty Ease, Video Request)
     socket.on('caregiver:control', (data) => {
       console.log(`[Socket.IO] Caregiver control command:`, data?.action);
       io.to('room:elderly').emit('elderly:control', data);
       io.emit('elderly:control', data);
       io.emit('elderly:control-broadcast', data);
+    });
+
+    socket.on('caregiver:adaptive-tune', (data) => {
+      console.log(`[Socket.IO] Caregiver adaptive difficulty tune:`, data?.difficulty);
+      io.to('room:elderly').emit('elderly:adaptive-tune', data);
+      io.emit('elderly:adaptive-tune', data);
     });
 
     socket.on('disconnect', (reason) => {

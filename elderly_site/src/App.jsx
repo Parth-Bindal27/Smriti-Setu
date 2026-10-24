@@ -27,6 +27,7 @@ import FocusPeripheralGame from './components/FocusPeripheralGame';
 import FocusFinderGame from './components/FocusFinderGame';
 import SmritiMatchQuestGame from './components/SmritiMatchQuestGame';
 import TuneMemoryGame from './components/TuneMemoryGame';
+import ElderlyStressCameraSentinel from './components/ElderlyStressCameraSentinel';
 import { TRANSLATIONS } from './i18n/translations';
 import { DEFAULT_MEMORY_ITEMS } from './data/memoryItems';
 import { speechService } from './services/speechService';
@@ -578,6 +579,15 @@ export default function App() {
           onSessionComplete={handleSessionComplete}
           selectedLanguage={selectedLanguage}
           t={t}
+        />
+      )}
+
+      {/* Live Cognitive & Camera Sentinel during active modules */}
+      {activeModule && (
+        <ElderlyStressCameraSentinel
+          activityTitle={activeModule.replace(/_/g, ' ')}
+          activityType="game"
+          selectedLanguage={selectedLanguage}
         />
       )}
 
