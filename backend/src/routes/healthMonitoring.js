@@ -168,7 +168,7 @@ router.post('/report-anomaly', async (req, res) => {
   }
 });
 
-// POST /api/health-monitoring/simulate — Trigger interactive scenarios for Shark Tank demonstration
+// POST /api/health-monitoring/simulate — Trigger interactive scenarios for clinical triage verification
 router.post('/simulate', async (req, res) => {
   try {
     const { scenario = 'tier_3' } = req.body;

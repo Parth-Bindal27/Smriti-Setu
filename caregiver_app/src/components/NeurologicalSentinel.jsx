@@ -103,7 +103,7 @@ export default function NeurologicalSentinel({ apiUrl, profile, onRefreshAll }) 
     };
   }, [socket]);
 
-  // Trigger interactive simulation scenarios for Shark Tank demonstration
+  // Trigger clinical calibration triage scenarios for verification
   const handleSimulate = async (scenario) => {
     try {
       setIsSimulating(true);
@@ -456,7 +456,7 @@ export default function NeurologicalSentinel({ apiUrl, profile, onRefreshAll }) 
         </div>
       )}
 
-      {/* Interactive Simulation Strip for Live Pitch / Demo Testing */}
+      {/* Sensor Calibration & Clinical Triage Verification */}
       <div style={{
         backgroundColor: '#FFFFFF',
         border: '1px solid var(--border-color)',
@@ -471,10 +471,10 @@ export default function NeurologicalSentinel({ apiUrl, profile, onRefreshAll }) 
       }}>
         <div>
           <span style={{ fontSize: '11px', fontWeight: '700', color: '#D97706', textTransform: 'uppercase' }}>
-            Interactive Demo & Pitch Triage Testing
+            Clinical Sensor Calibration & Diagnostic Verification
           </span>
           <p style={{ margin: '2px 0 0 0', fontSize: '13px', color: 'var(--text-muted)' }}>
-            Simulate how the system detects acute stroke/hemorrhage symptoms vs 48-hour persistent complaints
+            Calibrate how BE-FAST telemetry classifies acute symptoms vs 48-hour persistent observations
           </p>
         </div>
 

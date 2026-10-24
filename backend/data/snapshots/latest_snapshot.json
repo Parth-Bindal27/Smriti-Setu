@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "timestamp": "2026-10-24T04:06:24.524Z",
-  "tag": "periodic",
+  "timestamp": "2026-10-24T04:22:08.525Z",
+  "tag": "automated_test",
   "counts": {
     "profiles": 1,
     "memories": 25,
@@ -13,7 +13,7 @@
     "heirlooms": 4,
     "posts": 3,
     "routines": 3,
-    "sessions": 48,
+    "sessions": 51,
     "assessmentQuestions": 6,
     "assessmentLogs": 0
   },
@@ -21,8 +21,8 @@
     "profiles": [
       {
         "_id": "6adafa200303943bdad01ca9",
-        "name": "Sardar Harbhajan Singh",
-        "age": 77,
+        "name": "Shanti Devi Sharma",
+        "age": 75,
         "preferredLanguage": "Assamese / English",
         "region": "North India (Delhi, UP, Punjab, Haryana, Rajasthan, HP, J&K)",
         "culturalRegion": "North India (Delhi, UP, Punjab, Haryana, Rajasthan, HP, J&K)",
@@ -37,12 +37,12 @@
           "nameRecall": 1,
           "routineSequencing": 1
         },
-        "honorific": "Dadaji",
-        "greetingTitle": "Sat Sri Akal",
-        "hometown": "Amritsar, Punjab",
-        "currentResidence": "Model Town, Ludhiana",
-        "primaryLanguage": "Punjabi (ਪੰਜਾਬੀ)",
-        "secondaryLanguage": "Hindi (हिन्दी)",
+        "honorific": "Dadimaa",
+        "greetingTitle": "Pranaam & Suprabhat",
+        "hometown": "Varanasi (Kashi), Uttar Pradesh",
+        "currentResidence": "Vasant Kunj, New Delhi",
+        "primaryLanguage": "Hindi (हिन्दी)",
+        "secondaryLanguage": "English",
         "culturalInterests": [
           "Rongali Bihu Celebrations",
           "Brahmaputra Sunset Cruises",
@@ -50,15 +50,15 @@
           "Assam Orthodox Golden Tips Tea",
           "Naam-Ghor Spiritual Chants"
         ],
-        "comfortNotes": "Finds peace in Golden Temple Gurbani kirtan, childhood memories of lush mustard fields, bhangra dhol rhythms, and fresh winter sarson saag.",
+        "comfortNotes": "Comforted by memories of Dashashwamedh Ghat aarti bells, Krishna bhajans, marigold garlands, and winter morning chai with family.",
         "emergencyContact": {
-          "name": "Gurpreet Singh (Son)",
+          "name": "Amit Sharma (Son)",
           "relation": "Primary Caregiver",
-          "phone": "+91 98722 34567"
+          "phone": "+91 98111 87654"
         },
         "avatarUrl": "https://images.unsplash.com/photo-1544717305-2782549b5136?w=400&auto=format&fit=crop&q=80",
         "createdAt": "2026-10-23T06:09:36.960Z",
-        "updatedAt": "2026-10-24T03:26:02.350Z",
+        "updatedAt": "2026-10-24T04:12:40.282Z",
         "__v": 0
       }
     ],
@@ -1330,6 +1330,7 @@
         "_id": "6adc2ea0ed410965f43bf962",
         "title": "In 1974, Bhaben Koka and Pratibha cele...",
         "imageUrl": "https://images.unsplash.com/photo-1544717305-2782549b5136?w=600",
+        "photoUrl": "https://images.unsplash.com/photo-1544717305-2782549b5136?w=600",
         "videoUrl": "",
         "audioUrl": "",
         "category": "Events",
@@ -1337,6 +1338,7 @@
           "Deepak (Son)",
           "Pratibha (Wife)"
         ],
+        "associatedPeople": [],
         "relationship": "Family Member",
         "location": "",
         "details": "In 1974, Bhaben Koka and Pratibha celebrated Rongali Bihu at the Golaghat tea estate with Deepak.",
@@ -1372,17 +1374,16 @@
           "responseTimeSec": 0,
           "lastPlayedAt": null
         },
-        "associatedPeople": [],
         "sessionHistory": [],
         "createdAt": "2026-10-24T04:05:52.685Z",
         "updatedAt": "2026-10-24T04:05:52.685Z",
-        "photoUrl": "https://images.unsplash.com/photo-1544717305-2782549b5136?w=600",
         "__v": 0
       },
       {
         "_id": "6adc2ebeed410965f43c0246",
         "title": "In 1974, Bhaben Koka and Pratibha cele...",
         "imageUrl": "https://images.unsplash.com/photo-1544717305-2782549b5136?w=600",
+        "photoUrl": "https://images.unsplash.com/photo-1544717305-2782549b5136?w=600",
         "videoUrl": "",
         "audioUrl": "",
         "category": "Events",
@@ -1390,6 +1391,7 @@
           "Deepak (Son)",
           "Pratibha (Wife)"
         ],
+        "associatedPeople": [],
         "relationship": "Family Member",
         "location": "",
         "details": "In 1974, Bhaben Koka and Pratibha celebrated Rongali Bihu at the Golaghat tea estate with Deepak.",
@@ -1425,11 +1427,9 @@
           "responseTimeSec": 0,
           "lastPlayedAt": null
         },
-        "associatedPeople": [],
         "sessionHistory": [],
         "createdAt": "2026-10-24T04:06:22.291Z",
         "updatedAt": "2026-10-24T04:06:22.291Z",
-        "photoUrl": "https://images.unsplash.com/photo-1544717305-2782549b5136?w=600",
         "__v": 0
       }
     ],
@@ -2045,10 +2045,10 @@
         "icon": "Mic",
         "provenance": {
           "verifiedBy": "Deepak Baruah (Eldest Son)",
+          "verificationDate": "2026-10-24T04:05:52.689Z",
           "sourceDocument": "Clariti Voice Ingestion Pipeline",
           "trustScore": 0.99,
-          "isGroundTruth": true,
-          "verificationDate": "2026-10-24T04:05:52.689Z"
+          "isGroundTruth": true
         },
         "attributes": {},
         "createdAt": "2026-10-24T04:05:52.690Z",
@@ -2066,10 +2066,10 @@
         "icon": "Mic",
         "provenance": {
           "verifiedBy": "Deepak Baruah (Eldest Son)",
+          "verificationDate": "2026-10-24T04:06:22.294Z",
           "sourceDocument": "Clariti Voice Ingestion Pipeline",
           "trustScore": 0.99,
-          "isGroundTruth": true,
-          "verificationDate": "2026-10-24T04:06:22.294Z"
+          "isGroundTruth": true
         },
         "attributes": {},
         "createdAt": "2026-10-24T04:06:22.294Z",
@@ -2557,8 +2557,8 @@
         "strength": 1,
         "provenance": {
           "verifiedBy": "Deepak Baruah (Eldest Son)",
-          "confidence": 0.99,
-          "verificationDate": "2026-10-24T04:05:52.703Z"
+          "verificationDate": "2026-10-24T04:05:52.703Z",
+          "confidence": 0.99
         },
         "createdAt": "2026-10-24T04:05:52.704Z",
         "updatedAt": "2026-10-24T04:05:52.704Z",
@@ -2575,8 +2575,8 @@
         "strength": 1,
         "provenance": {
           "verifiedBy": "Deepak Baruah (Eldest Son)",
-          "confidence": 0.99,
-          "verificationDate": "2026-10-24T04:06:22.297Z"
+          "verificationDate": "2026-10-24T04:06:22.297Z",
+          "confidence": 0.99
         },
         "createdAt": "2026-10-24T04:06:22.298Z",
         "updatedAt": "2026-10-24T04:06:22.298Z",
@@ -2846,6 +2846,7 @@
     "routines": [
       {
         "_id": "6adafa200303943bdad01cb2",
+        "name": "Morning Refreshment & Jolpan (পুৱাৰ চাহ আৰু জলপান)",
         "title": "Morning Refreshment & Jolpan (পুৱাৰ চাহ আৰু জলপান)",
         "time": "07:30 AM",
         "approxTime": "08:00 AM",
@@ -2881,42 +2882,6 @@
         "__v": 0
       },
       {
-        "_id": "6adafa200303943bdad01cb3",
-        "title": "Veranda Sun & Garden Walk (বাৰান্দাৰ ৰোদ আৰু খোজ)",
-        "time": "09:30 AM",
-        "approxTime": "08:00 AM",
-        "period": "Morning",
-        "culturalNote": "Fresh gentle sunlight on the veranda amidst blooming orchids.",
-        "steps": [
-          {
-            "stepNumber": 1,
-            "title": "Put on soft walking slippers",
-            "description": "Ensure your feet are comfortable and secure.",
-            "completed": false,
-            "audioPrompt": "Let us put on your comfortable walking slippers."
-          },
-          {
-            "stepNumber": 2,
-            "title": "Take 10 gentle steps along the sunny railing",
-            "description": "Feel the morning breeze and watch the birds on the Nahor tree.",
-            "completed": false,
-            "audioPrompt": "Walk gently along the veranda, breathing in the fresh morning air."
-          },
-          {
-            "stepNumber": 3,
-            "title": "Gentle hand stretch and deep breath",
-            "description": "Raise your hands gently, take three calming deep breaths.",
-            "completed": false,
-            "audioPrompt": "Breathe in slowly, and exhale with a smile."
-          }
-        ],
-        "isActive": true,
-        "orderIndex": 2,
-        "createdAt": "2026-10-23T06:09:36.973Z",
-        "updatedAt": "2026-10-23T06:09:36.973Z",
-        "__v": 0
-      },
-      {
         "_id": "6adafa200303943bdad01cb4",
         "title": "Evening Prayer & Calm Relaxation (সন্ধিয়াৰ নাম-প্ৰসংগ)",
         "time": "05:30 PM",
@@ -2943,6 +2908,36 @@
         "orderIndex": 3,
         "createdAt": "2026-10-23T06:09:36.973Z",
         "updatedAt": "2026-10-23T06:09:36.973Z",
+        "__v": 0
+      },
+      {
+        "_id": "6adc306bed410965f43c15a8",
+        "name": "Afternoon",
+        "title": "Afternoon",
+        "time": "08:00 AM",
+        "approxTime": "08:00 AM",
+        "period": "Morning",
+        "culturalNote": "",
+        "steps": [
+          {
+            "stepNumber": 1,
+            "title": "Drink warm water",
+            "description": "Half glass of warm water with lemon",
+            "completed": false,
+            "audioPrompt": "Take a gentle sip of warm water."
+          },
+          {
+            "stepNumber": 2,
+            "title": "Morning fresh air on veranda",
+            "description": "Walk 10 peaceful steps by the railing",
+            "completed": false,
+            "audioPrompt": "Enjoy the fresh morning breeze."
+          }
+        ],
+        "isActive": true,
+        "orderIndex": 3,
+        "createdAt": "2026-10-24T04:13:31.342Z",
+        "updatedAt": "2026-10-24T04:13:31.342Z",
         "__v": 0
       }
     ],
@@ -4056,7 +4051,9 @@
       },
       {
         "_id": "6adc2ea0ed410965f43bf93a",
+        "activityName": "Focus Finder — Scene Search",
         "activityTitle": "Focus Finder — Scene Search",
+        "activityCategory": "focus_finder",
         "activityType": "focus_finder",
         "level": 1,
         "gameLevel": 1,
@@ -4078,13 +4075,13 @@
         "paceObservation": "Comfortable & Unhurried",
         "createdAt": "2026-10-24T04:05:52.622Z",
         "updatedAt": "2026-10-24T04:05:52.622Z",
-        "activityName": "Focus Finder — Scene Search",
-        "activityCategory": "focus_finder",
         "__v": 0
       },
       {
         "_id": "6adc2ea0ed410965f43bf93c",
+        "activityName": "Smriti Match Quest",
         "activityTitle": "Smriti Match Quest",
+        "activityCategory": "smriti_match_quest",
         "activityType": "smriti_match_quest",
         "level": 1,
         "gameLevel": 1,
@@ -4106,13 +4103,13 @@
         "paceObservation": "Comfortable & Unhurried",
         "createdAt": "2026-10-24T04:05:52.629Z",
         "updatedAt": "2026-10-24T04:05:52.629Z",
-        "activityName": "Smriti Match Quest",
-        "activityCategory": "smriti_match_quest",
         "__v": 0
       },
       {
         "_id": "6adc2ea0ed410965f43bf942",
+        "activityName": "Tune Memory — Melodic Recall",
         "activityTitle": "Tune Memory — Melodic Recall",
+        "activityCategory": "tune_memory",
         "activityType": "tune_memory",
         "level": 1,
         "gameLevel": 1,
@@ -4134,13 +4131,13 @@
         "paceObservation": "Comfortable & Unhurried",
         "createdAt": "2026-10-24T04:05:52.636Z",
         "updatedAt": "2026-10-24T04:05:52.636Z",
-        "activityName": "Tune Memory — Melodic Recall",
-        "activityCategory": "tune_memory",
         "__v": 0
       },
       {
         "_id": "6adc2ea0ed410965f43bf957",
+        "activityName": "Bihu Dhol Memory",
         "activityTitle": "Bihu Dhol Memory",
+        "activityCategory": "cultural_reminiscence",
         "activityType": "cultural_reminiscence",
         "level": 1,
         "gameLevel": 1,
@@ -4162,13 +4159,13 @@
         "paceObservation": "Comfortable & Unhurried",
         "createdAt": "2026-10-24T04:05:52.667Z",
         "updatedAt": "2026-10-24T04:05:52.667Z",
-        "activityName": "Bihu Dhol Memory",
-        "activityCategory": "cultural_reminiscence",
         "__v": 0
       },
       {
         "_id": "6adc2ebeed410965f43c0213",
+        "activityName": "Focus Finder — Scene Search",
         "activityTitle": "Focus Finder — Scene Search",
+        "activityCategory": "focus_finder",
         "activityType": "focus_finder",
         "level": 1,
         "gameLevel": 1,
@@ -4190,13 +4187,13 @@
         "paceObservation": "Comfortable & Unhurried",
         "createdAt": "2026-10-24T04:06:22.222Z",
         "updatedAt": "2026-10-24T04:06:22.222Z",
-        "activityName": "Focus Finder — Scene Search",
-        "activityCategory": "focus_finder",
         "__v": 0
       },
       {
         "_id": "6adc2ebeed410965f43c0215",
+        "activityName": "Smriti Match Quest",
         "activityTitle": "Smriti Match Quest",
+        "activityCategory": "smriti_match_quest",
         "activityType": "smriti_match_quest",
         "level": 1,
         "gameLevel": 1,
@@ -4218,13 +4215,13 @@
         "paceObservation": "Comfortable & Unhurried",
         "createdAt": "2026-10-24T04:06:22.228Z",
         "updatedAt": "2026-10-24T04:06:22.228Z",
-        "activityName": "Smriti Match Quest",
-        "activityCategory": "smriti_match_quest",
         "__v": 0
       },
       {
         "_id": "6adc2ebeed410965f43c0217",
+        "activityName": "Tune Memory — Melodic Recall",
         "activityTitle": "Tune Memory — Melodic Recall",
+        "activityCategory": "tune_memory",
         "activityType": "tune_memory",
         "level": 1,
         "gameLevel": 1,
@@ -4246,13 +4243,13 @@
         "paceObservation": "Comfortable & Unhurried",
         "createdAt": "2026-10-24T04:06:22.232Z",
         "updatedAt": "2026-10-24T04:06:22.232Z",
-        "activityName": "Tune Memory — Melodic Recall",
-        "activityCategory": "tune_memory",
         "__v": 0
       },
       {
         "_id": "6adc2ebeed410965f43c023b",
+        "activityName": "Bihu Dhol Memory",
         "activityTitle": "Bihu Dhol Memory",
+        "activityCategory": "cultural_reminiscence",
         "activityType": "cultural_reminiscence",
         "level": 1,
         "gameLevel": 1,
@@ -4274,8 +4271,90 @@
         "paceObservation": "Comfortable & Unhurried",
         "createdAt": "2026-10-24T04:06:22.278Z",
         "updatedAt": "2026-10-24T04:06:22.278Z",
-        "activityName": "Bihu Dhol Memory",
-        "activityCategory": "cultural_reminiscence",
+        "__v": 0
+      },
+      {
+        "_id": "6adc3270925aee67dbd98590",
+        "activityTitle": "Focus Finder — Scene Search",
+        "activityType": "focus_finder",
+        "level": 1,
+        "gameLevel": 1,
+        "score": 100,
+        "accuracy": 100,
+        "responseTimeMs": 150000,
+        "durationSeconds": 150,
+        "attempts": 4,
+        "hintsUsed": 1,
+        "mistakes": 0,
+        "completed": true,
+        "completionStatus": "completed",
+        "responseMethod": "touch",
+        "needsReinforcement": false,
+        "contentRegion": "NER",
+        "supportiveFeedback": "Unhurried and Calm Participation",
+        "favoriteTopicRevisited": "Family Memories & Heritage",
+        "itemsEngaged": 1,
+        "paceObservation": "Comfortable & Unhurried",
+        "createdAt": "2026-10-24T04:22:08.499Z",
+        "updatedAt": "2026-10-24T04:22:08.499Z",
+        "activityName": "Focus Finder — Scene Search",
+        "activityCategory": "focus_finder",
+        "__v": 0
+      },
+      {
+        "_id": "6adc3270925aee67dbd98592",
+        "activityTitle": "Smriti Match Quest",
+        "activityType": "smriti_match_quest",
+        "level": 1,
+        "gameLevel": 1,
+        "score": 100,
+        "accuracy": 100,
+        "responseTimeMs": 150000,
+        "durationSeconds": 150,
+        "attempts": 4,
+        "hintsUsed": 1,
+        "mistakes": 0,
+        "completed": true,
+        "completionStatus": "completed",
+        "responseMethod": "touch",
+        "needsReinforcement": false,
+        "contentRegion": "NER",
+        "supportiveFeedback": "Unhurried and Calm Participation",
+        "favoriteTopicRevisited": "Family Memories & Heritage",
+        "itemsEngaged": 1,
+        "paceObservation": "Comfortable & Unhurried",
+        "createdAt": "2026-10-24T04:22:08.505Z",
+        "updatedAt": "2026-10-24T04:22:08.505Z",
+        "activityName": "Smriti Match Quest",
+        "activityCategory": "smriti_match_quest",
+        "__v": 0
+      },
+      {
+        "_id": "6adc3270925aee67dbd98594",
+        "activityTitle": "Tune Memory — Melodic Recall",
+        "activityType": "tune_memory",
+        "level": 1,
+        "gameLevel": 1,
+        "score": 100,
+        "accuracy": 100,
+        "responseTimeMs": 150000,
+        "durationSeconds": 150,
+        "attempts": 4,
+        "hintsUsed": 1,
+        "mistakes": 0,
+        "completed": true,
+        "completionStatus": "completed",
+        "responseMethod": "touch",
+        "needsReinforcement": false,
+        "contentRegion": "NER",
+        "supportiveFeedback": "Unhurried and Calm Participation",
+        "favoriteTopicRevisited": "Family Memories & Heritage",
+        "itemsEngaged": 1,
+        "paceObservation": "Comfortable & Unhurried",
+        "createdAt": "2026-10-24T04:22:08.510Z",
+        "updatedAt": "2026-10-24T04:22:08.510Z",
+        "activityName": "Tune Memory — Melodic Recall",
+        "activityCategory": "tune_memory",
         "__v": 0
       }
     ],
